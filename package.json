@@ -10,6 +10,8 @@
     "dev": "vite",
     "build": "vite build",
     "test": "vitest",
+    "test:unit": "vitest",
+    "test:e2e": "playwright test",
     "lint": "eslint .",
     "preview": "vite preview",
     "build:offline:css": "mkdir -p offline/dist && tailwindcss -c offline/tailwind.config.js -i offline/styles.css -o offline/dist/styles.css --minify",
