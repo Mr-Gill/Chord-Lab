@@ -1,7 +1,7 @@
 import { useMemo, useState, useRef, type KeyboardEvent, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getChordTheme } from '../utils/diagramTheme'
-import useAudio from '../hooks/useAudio'
+import { useAudioContext } from '../contexts/AudioProvider'
 
 // Simple, responsive chord wheel with majors on outer ring and relative minors on inner ring
 // Colors pulled from getChordTheme to ensure consistency with diagrams and archived palette
@@ -54,7 +54,7 @@ export default function ChordWheel() {
   const [selected, setSelected] = useState<string>('C')
   const [activeKey, setActiveKey] = useState<string>('C')
   const [hovered, setHovered] = useState<number | null>(null)
-  const { initAudio, playChord } = useAudio()
+  const { initAudio, playChord } = useAudioContext()
   const throttleRef = useRef(false)
   const navigate = useNavigate()
 

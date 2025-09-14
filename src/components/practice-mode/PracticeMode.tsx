@@ -5,7 +5,7 @@ import type { FretPosition } from '../../types';
 import { getChordTheme } from '../../utils/diagramTheme';
 import useMetronome from '../../hooks/useMetronome';
 import { useAchievements } from '../../contexts/AchievementContext';
-import useAudio from '../../hooks/useAudio';
+import { useAudioContext } from '../../contexts/AudioProvider';
 import usePracticeStatistics from '../../hooks/usePracticeStatistics';
 import ChallengeMode from './ChallengeMode';
 import Statistics from './Statistics';
@@ -99,7 +99,7 @@ const PracticeMode: FC = () => {
     const [showTips, setShowTips] = useState<boolean>(true);
     const location = useLocation();
     const [keyCenter, setKeyCenter] = useState<MajorKey | null>(null);
-    const { playChord, fretToNote, guitarLoaded } = useAudio();
+    const { playChord, fretToNote, guitarLoaded } = useAudioContext();
     const [activeTab, setActiveTab] = useState<'practice' | 'chords' | 'wheel'>('practice');
 
     useEffect(() => {

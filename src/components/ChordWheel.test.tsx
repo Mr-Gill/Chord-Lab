@@ -8,8 +8,8 @@ import { ThemeProvider } from '../contexts/ThemeContext'
 const initAudio = vi.fn()
 const playChord = vi.fn()
 
-vi.mock('../hooks/useAudio', () => ({
-  default: () => ({ initAudio, playChord }),
+vi.mock('../contexts/AudioProvider', () => ({
+  useAudioContext: () => ({ initAudio, playChord }),
 }))
 
 beforeEach(() => {

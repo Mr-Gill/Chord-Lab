@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import useAudio from '../../../hooks/useAudio';
+import { useAudioContext } from '../../../contexts/AudioProvider';
 import { shuffle } from '../../../utils/shuffle';
 
 interface Song {
@@ -16,7 +16,7 @@ interface Score {
 const GENRES = ['Rock', 'Jazz', 'Classical'];
 
 const GenreQuiz: React.FC = () => {
-  const { playNote } = useAudio();
+  const { playNote } = useAudioContext();
 
   const initialSongs: Song[] = useMemo(
     () => [
