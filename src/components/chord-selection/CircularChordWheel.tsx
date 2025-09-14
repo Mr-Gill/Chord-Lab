@@ -199,6 +199,7 @@ const ChordSegment: React.FC<ChordSegmentProps> = ({
           opacity="0.4"
           className="animate-pulse"
         />
+      )}
       </g>
     </>
   )
