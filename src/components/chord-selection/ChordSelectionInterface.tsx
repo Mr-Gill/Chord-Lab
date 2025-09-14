@@ -199,11 +199,14 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
                     }`}
                   >
                     Start Practice
-                    {selectedChords.length > 0 && (
-                      <span className="block text-sm opacity-90">
-                        {selectedChords.filter(c => c).length} chord{selectedChords.filter(c => c).length !== 1 ? 's' : ''} selected
-                      </span>
-                    )}
+                    {selectedChords.length > 0 && (() => {
+                      const selectedCount = selectedChords.filter(c => c).length;
+                      return (
+                        <span className="block text-sm opacity-90">
+                          {selectedCount} chord{selectedCount !== 1 ? 's' : ''} selected
+                        </span>
+                      );
+                    })()}
                   </button>
                   
                   {selectedChords.length < 2 && (
