@@ -1,5 +1,6 @@
 import React from 'react';
 import './PianoChordDiagram.css';
+import { getChordTheme } from '../../utils/diagramTheme';
 import { KEYBOARD_LAYOUT } from '../diagrams/PianoDiagram';
 import { getMidiNumber, getNoteFromMidi, getNoteName } from '../../utils/music-theory';
 
@@ -12,7 +13,24 @@ interface PianoChordDiagramProps {
 const PianoChordDiagram: React.FC<PianoChordDiagramProps> = ({
   notes,
   chordName,
-  color = '#cc39bc' // Default color
+  color
+}) => {
+  const resolvedColor = color ?? getChordTheme(chordName ?? '').primary;
+  const activeNotes = notes || [];
+  
+  const keys = [
+    { type: 'white', note: 'C' },
+    { type: 'black', note: 'C#' },
+    { type: 'white', note: 'D' },
+    { type: 'black', note: 'D#' },
+    { type: 'white', note: 'E' },
+    { type: 'white', note: 'F' },
+    { type: 'black', note: 'F#' },
+    { type: 'white', note: 'G' },
+    { type: 'black', note: 'G#' },
+    { type: 'white', note: 'A' },
+    { type: 'black', note: 'A#' },
+    { type: 'white', note: 'B' },
 }) => {
   const normalizeNote = (note: string) => {
     const midi = getMidiNumber(note);
