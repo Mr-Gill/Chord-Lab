@@ -157,6 +157,7 @@ const ChordSegment: React.FC<ChordSegmentProps> = ({
         }}
         onMouseEnter={() => onPreview(chord)}
         onMouseLeave={onHoverEnd}
+        onClick={() => onPreview(chord)} // Add click handler for audio
       />
       
       <g

@@ -171,7 +171,9 @@ const GuitarChordDiagram: React.FC<GuitarChordDiagramProps> = ({
                 top: `calc((100%/6)*${pos.fret - 0.5})`,
                 '--cc': rootNoteColor
               } as React.CSSProperties}
-            />
+            >
+              {pos.finger}
+            </div>
           );
         })}
         

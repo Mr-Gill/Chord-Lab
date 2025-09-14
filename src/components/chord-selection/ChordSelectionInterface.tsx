@@ -24,11 +24,49 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
     setSelectedChords(newChords)
     onChordsSelected?.(newChords.filter(c => c))
 
-    // Play chord feedback
+    // Play chord feedback using full chord
     initAudio()
-    // Simple chord playback using chord root note
-    const notes = [chord.replace('m', '') + '4']
-    playChord(notes, 0.6)
+    
+    // Import the chord definition to get proper notes
+    import('../../data/chords').then(({ chords }) => {
+      const chordDef = chords[chord]
+      if (chordDef) {
+        // Play the full chord using the piano notes from the chord definition
+        playChord(chordDef.pianoNotes, 0.6, 'piano')
+      } else {
+        // Fallback to simple chord construction
+        const isMinor = chord.endsWith('m')
+        const root = isMinor ? chord.slice(0, -1) : chord
+        const NOTE_SEQUENCE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        const rootIndex = NOTE_SEQUENCE.indexOf(root)
+        if (rootIndex !== -1) {
+          const thirdIndex = (rootIndex + (isMinor ? 3 : 4)) % 12
+          const fifthIndex = (rootIndex + 7) % 12
+          const notes = [
+            `${NOTE_SEQUENCE[rootIndex]}4`,
+            `${NOTE_SEQUENCE[thirdIndex]}4`,
+            `${NOTE_SEQUENCE[fifthIndex]}4`,
+          ]
+          playChord(notes, 0.6)
+        }
+      }
+    }).catch(() => {
+      // Fallback to simple chord construction if import fails
+      const isMinor = chord.endsWith('m')
+      const root = isMinor ? chord.slice(0, -1) : chord
+      const NOTE_SEQUENCE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+      const rootIndex = NOTE_SEQUENCE.indexOf(root)
+      if (rootIndex !== -1) {
+        const thirdIndex = (rootIndex + (isMinor ? 3 : 4)) % 12
+        const fifthIndex = (rootIndex + 7) % 12
+        const notes = [
+          `${NOTE_SEQUENCE[rootIndex]}4`,
+          `${NOTE_SEQUENCE[thirdIndex]}4`,
+          `${NOTE_SEQUENCE[fifthIndex]}4`,
+        ]
+        playChord(notes, 0.6)
+      }
+    })
   }, [selectedChords, onChordsSelected, initAudio, playChord])
 
   const handleRemoveChord = useCallback((index: number) => {
@@ -49,9 +87,47 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
   const handleChordPreview = useCallback((chord: string) => {
     setHoveredChord(chord)
     initAudio()
-    // Simple preview - just root note
-    const notes = [chord.replace('m', '') + '4']
-    playChord(notes, 0.4)
+    
+    // Import the chord definition to get proper notes
+    import('../../data/chords').then(({ chords }) => {
+      const chordDef = chords[chord]
+      if (chordDef) {
+        // Play the full chord using the piano notes from the chord definition
+        playChord(chordDef.pianoNotes, 0.4, 'piano')
+      } else {
+        // Fallback to simple chord construction
+        const isMinor = chord.endsWith('m')
+        const root = isMinor ? chord.slice(0, -1) : chord
+        const NOTE_SEQUENCE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        const rootIndex = NOTE_SEQUENCE.indexOf(root)
+        if (rootIndex !== -1) {
+          const thirdIndex = (rootIndex + (isMinor ? 3 : 4)) % 12
+          const fifthIndex = (rootIndex + 7) % 12
+          const notes = [
+            `${NOTE_SEQUENCE[rootIndex]}4`,
+            `${NOTE_SEQUENCE[thirdIndex]}4`,
+            `${NOTE_SEQUENCE[fifthIndex]}4`,
+          ]
+          playChord(notes, 0.4)
+        }
+      }
+    }).catch(() => {
+      // Fallback to simple chord construction if import fails
+      const isMinor = chord.endsWith('m')
+      const root = isMinor ? chord.slice(0, -1) : chord
+      const NOTE_SEQUENCE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+      const rootIndex = NOTE_SEQUENCE.indexOf(root)
+      if (rootIndex !== -1) {
+        const thirdIndex = (rootIndex + (isMinor ? 3 : 4)) % 12
+        const fifthIndex = (rootIndex + 7) % 12
+        const notes = [
+          `${NOTE_SEQUENCE[rootIndex]}4`,
+          `${NOTE_SEQUENCE[thirdIndex]}4`,
+          `${NOTE_SEQUENCE[fifthIndex]}4`,
+        ]
+        playChord(notes, 0.4)
+      }
+    })
   }, [initAudio, playChord])
 
   const handleChordClick = useCallback((chord: string) => {
@@ -59,19 +135,43 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
     
     // Import the chord definition to get proper notes
     import('../../data/chords').then(({ chords }) => {
-      const chordDef = chords.find(c => c.name === chord)
+      const chordDef = chords[chord]
       if (chordDef) {
         // Play the full chord using the piano notes from the chord definition
         playChord(chordDef.pianoNotes, 1.0, 'piano')
       } else {
-        // Fallback to root note if chord definition not found
-        const notes = [chord.replace('m', '') + '4']
-        playChord(notes, 1.0)
+        // Fallback to simple chord construction
+        const isMinor = chord.endsWith('m')
+        const root = isMinor ? chord.slice(0, -1) : chord
+        const NOTE_SEQUENCE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+        const rootIndex = NOTE_SEQUENCE.indexOf(root)
+        if (rootIndex !== -1) {
+          const thirdIndex = (rootIndex + (isMinor ? 3 : 4)) % 12
+          const fifthIndex = (rootIndex + 7) % 12
+          const notes = [
+            `${NOTE_SEQUENCE[rootIndex]}4`,
+            `${NOTE_SEQUENCE[thirdIndex]}4`,
+            `${NOTE_SEQUENCE[fifthIndex]}4`,
+          ]
+          playChord(notes, 1.0)
+        }
       }
     }).catch(() => {
-      // Fallback if import fails
-      const notes = [chord.replace('m', '') + '4']
-      playChord(notes, 1.0)
+      // Fallback to simple chord construction if import fails
+      const isMinor = chord.endsWith('m')
+      const root = isMinor ? chord.slice(0, -1) : chord
+      const NOTE_SEQUENCE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+      const rootIndex = NOTE_SEQUENCE.indexOf(root)
+      if (rootIndex !== -1) {
+        const thirdIndex = (rootIndex + (isMinor ? 3 : 4)) % 12
+        const fifthIndex = (rootIndex + 7) % 12
+        const notes = [
+          `${NOTE_SEQUENCE[rootIndex]}4`,
+          `${NOTE_SEQUENCE[thirdIndex]}4`,
+          `${NOTE_SEQUENCE[fifthIndex]}4`,
+        ]
+        playChord(notes, 1.0)
+      }
     })
   }, [initAudio, playChord])
 

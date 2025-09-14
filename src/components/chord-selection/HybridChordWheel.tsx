@@ -226,6 +226,7 @@ interface DraggableChordButtonProps {
   isHovered: boolean
   onPreview: (chord: string) => void
   onHoverEnd: () => void
+  onChordClick: (chord: string) => void
 }
 
 const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
@@ -234,7 +235,8 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
   ring,
   color,
   onPreview,
-  onHoverEnd
+  onHoverEnd,
+  onChordClick
 }) => {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -266,6 +268,7 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
   return (
     <div
       ref={ref}
+      data-chord={chord}
       style={{
         position: 'absolute',
         left: x - size / 2,
@@ -290,6 +293,7 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
       }}
       onMouseEnter={() => onPreview(chord)}
       onMouseLeave={onHoverEnd}
+      onClick={() => onChordClick(chord)}
     >
       {isDragging && chord}
     </div>
@@ -467,6 +471,7 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
           isHovered={hoveredChord === chord}
           onPreview={onPreview}
           onHoverEnd={onHoverEnd}
+          onChordClick={onChordClick}
         />
       ))}
     </div>
