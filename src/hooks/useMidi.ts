@@ -16,7 +16,7 @@ interface MidiNote {
 }
 
 export const useMidi = () => {
-  const [midiAccess, setMidiAccess] = useState<WebMidi.MIDIAccess | null>(null);
+  const [midiAccess, setMidiAccess] = useState<MIDIAccess | null>(null);
   const [devices, setDevices] = useState<MidiDevice[]>([]);
   const [isSupported, setIsSupported] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -24,17 +24,35 @@ export const useMidi = () => {
   const [recording, setRecording] = useState(false);
   const [recordedNotes, setRecordedNotes] = useState<MidiNote[]>([]);
 
-  // Check MIDI support and initialize
-  useEffect(() => {
-    if (navigator.requestMIDIAccess) {
-      setIsSupported(true);
-      initializeMidi();
-    } else {
-      console.warn('WebMIDI is not supported in this browser');
-    }
+  const updateDeviceList = useCallback((access: MIDIAccess) => {
+    const newDevices: MidiDevice[] = [];
+
+    // Add input devices
+    access.inputs.forEach((input) => {
+      newDevices.push({
+        id: input.id,
+        name: input.name ?? 'Unknown Input',
+        manufacturer: input.manufacturer ?? 'Unknown',
+        state: input.state as 'connected' | 'disconnected',
+        type: 'input',
+      });
+    });
+
+    // Add output devices
+    access.outputs.forEach((output) => {
+      newDevices.push({
+        id: output.id,
+        name: output.name ?? 'Unknown Output',
+        manufacturer: output.manufacturer ?? 'Unknown',
+        state: output.state as 'connected' | 'disconnected',
+        type: 'output',
+      });
+    });
+
+    setDevices(newDevices);
   }, []);
 
-  const initializeMidi = async () => {
+  const initializeMidi = useCallback(async () => {
     try {
       const access = await navigator.requestMIDIAccess();
       setMidiAccess(access);
@@ -44,10 +62,21 @@ export const useMidi = () => {
       console.error('Failed to initialize MIDI:', error);
       setIsConnected(false);
     }
-  };
+  }, [updateDeviceList]);
 
-  const handleMidiMessage = useCallback((event: WebMidi.MIDIMessageEvent) => {
-    const [status, note, velocity] = event.data;
+  // Check MIDI support and initialize
+  useEffect(() => {
+    if (navigator.requestMIDIAccess) {
+      setIsSupported(true);
+      void initializeMidi();
+    } else {
+      console.warn('WebMIDI is not supported in this browser');
+    }
+  }, [initializeMidi]);
+
+  const handleMidiMessage = useCallback((event: MIDIMessageEvent) => {
+    const data = Array.from(event.data);
+    const [status, note, velocity] = data;
     const channel = status & 0x0f;
     const messageType = status & 0xf0;
 
@@ -60,7 +89,7 @@ export const useMidi = () => {
           note,
           velocity,
           channel,
-          timestamp: event.timeStamp || Date.now(),
+          timestamp: event.timeStamp ?? Date.now(),
         };
 
         setLastNote(midiNote);
@@ -88,41 +117,13 @@ export const useMidi = () => {
         input.onmidimessage = null;
       });
     };
-  }, [midiAccess, handleMidiMessage]);
+  }, [midiAccess, handleMidiMessage, updateDeviceList, setupInputListeners]);
 
-  const updateDeviceList = (access: WebMidi.MIDIAccess) => {
-    const newDevices: MidiDevice[] = [];
-
-    // Add input devices
-    access.inputs.forEach((input) => {
-      newDevices.push({
-        id: input.id!,
-        name: input.name || 'Unknown Input',
-        manufacturer: input.manufacturer || 'Unknown',
-        state: input.state as 'connected' | 'disconnected',
-        type: 'input',
-      });
-    });
-
-    // Add output devices
-    access.outputs.forEach((output) => {
-      newDevices.push({
-        id: output.id!,
-        name: output.name || 'Unknown Output',
-        manufacturer: output.manufacturer || 'Unknown',
-        state: output.state as 'connected' | 'disconnected',
-        type: 'output',
-      });
-    });
-
-    setDevices(newDevices);
-  };
-
-  const setupInputListeners = (access: WebMidi.MIDIAccess) => {
+  const setupInputListeners = useCallback((access: MIDIAccess) => {
     access.inputs.forEach((input) => {
       input.onmidimessage = handleMidiMessage;
     });
-  };
+  }, [handleMidiMessage]);
 
   const startRecording = () => {
     setRecording(true);
@@ -146,7 +147,7 @@ export const useMidi = () => {
     }
   }, [midiAccess]);
 
-  const playNote = useCallback((note: number, velocity: number = 127, duration: number = 500) => {
+  const playNote = useCallback((note: number, velocity = 127, duration = 500) => {
     if (!midiAccess) return;
 
     // Send to all connected output devices

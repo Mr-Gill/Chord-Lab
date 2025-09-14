@@ -86,7 +86,7 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
 
   const handleChordPreview = useCallback((chord: string) => {
     setHoveredChord(chord)
-    initAudio()
+    void initAudio()
     
     // Import the chord definition to get proper notes
     import('../../data/chords').then(({ chords }) => {

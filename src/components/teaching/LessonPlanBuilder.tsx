@@ -54,14 +54,14 @@ const LessonPlanBuilder: React.FC = () => {
 
     setCurrentPlan(prev => ({
       ...prev,
-      steps: [...(prev.steps || []), newStep],
+      steps: [...(prev.steps ?? []), newStep],
     }));
   };
 
   const updateStep = (stepId: string, updates: Partial<LessonStep>) => {
     setCurrentPlan(prev => ({
       ...prev,
-      steps: (prev.steps || []).map(step =>
+      steps: (prev.steps ?? []).map(step =>
         step.id === stepId ? { ...step, ...updates } : step
       ),
     }));
@@ -70,7 +70,7 @@ const LessonPlanBuilder: React.FC = () => {
   const removeStep = (stepId: string) => {
     setCurrentPlan(prev => ({
       ...prev,
-      steps: (prev.steps || []).filter(step => step.id !== stepId),
+      steps: (prev.steps ?? []).filter(step => step.id !== stepId),
     }));
   };
 
@@ -81,9 +81,9 @@ const LessonPlanBuilder: React.FC = () => {
       const newPlan: LessonPlan = {
         id: Math.random().toString(36).substring(2, 15),
         title: currentPlan.title,
-        description: currentPlan.description || '',
+        description: currentPlan.description ?? '',
         duration: totalDuration,
-        difficulty: currentPlan.difficulty || 'beginner',
+        difficulty: currentPlan.difficulty ?? 'beginner',
         steps: currentPlan.steps,
         createdAt: new Date(),
       };
@@ -147,7 +147,7 @@ const LessonPlanBuilder: React.FC = () => {
                 </label>
                 <input
                   type="text"
-                  value={currentPlan.title || ''}
+                  value={currentPlan.title ?? ''}
                   onChange={(e) => setCurrentPlan(prev => ({ ...prev, title: e.target.value }))}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                   placeholder="e.g., Introduction to Basic Chords"
@@ -158,7 +158,7 @@ const LessonPlanBuilder: React.FC = () => {
                   Difficulty Level
                 </label>
                 <select
-                  value={currentPlan.difficulty || 'beginner'}
+                  value={currentPlan.difficulty ?? 'beginner'}
                   onChange={(e) => setCurrentPlan(prev => ({ ...prev, difficulty: e.target.value as any }))}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                 >
@@ -174,7 +174,7 @@ const LessonPlanBuilder: React.FC = () => {
                 Description
               </label>
               <textarea
-                value={currentPlan.description || ''}
+                value={currentPlan.description ?? ''}
                 onChange={(e) => setCurrentPlan(prev => ({ ...prev, description: e.target.value }))}
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"

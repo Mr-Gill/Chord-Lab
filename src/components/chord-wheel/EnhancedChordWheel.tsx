@@ -1,8 +1,7 @@
-import React, { useMemo, useState, useRef, useCallback } from 'react';
-import { useDrag, useDrop, DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import React, { useMemo, useRef, useCallback } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
 import { getChordTheme } from '../../utils/diagramTheme';
-import { KEY_DEGREES, getRomanNumeral, isDiatonicChord } from '../../utils/key-degrees';
+import { getRomanNumeral, isDiatonicChord } from '../../utils/key-degrees';
 import { useAudioContext } from '../../contexts/AudioProvider';
 
 interface EnhancedChordWheelProps {
@@ -20,7 +19,7 @@ interface ChordItemProps {
 }
 
 interface ProgressionDropZoneProps {
-  progression: Array<{ chord: string; roman: string | null; id: string }>;
+  progression: { chord: string; roman: string | null; id: string }[];
   onAddChord: (chord: string) => void;
   onRemoveChord: (id: string) => void;
   selectedKey: string;
@@ -80,7 +79,7 @@ const ProgressionDropZone: React.FC<ProgressionDropZoneProps> = ({
   progression, 
   onAddChord, 
   onRemoveChord, 
-  selectedKey 
+  selectedKey: _selectedKey 
 }) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'CHORD',
@@ -116,7 +115,7 @@ const ProgressionDropZone: React.FC<ProgressionDropZoneProps> = ({
                 style={{ backgroundColor: theme.primary }}
               >
                 <span className="text-sm">
-                  {item.roman || item.chord}
+                  {item.roman ?? item.chord}
                 </span>
                 <button
                   onClick={() => onRemoveChord(item.id)}
