@@ -10,6 +10,7 @@ import { ScoreboardProvider } from './components/classroom/Scoreboard'
 import { ChordBuilderProvider } from './contexts/ChordBuilderContext';
 import { CollaborationProvider } from './contexts/CollaborationContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
+import Dropdown from './components/common/Dropdown';
 import './styles/responsive-diagrams.css'
 import { StudentView } from './components/student/StudentView';
 
@@ -121,11 +122,9 @@ function App() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 9l6 6 6-6" />
           </svg>
         </button>
-        {isMoreOpen && (
-          <div className="absolute right-0 mt-2 flex flex-col bg-white/95 dark:bg-gray-800/95 border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-2xl backdrop-blur-lg p-3 z-20 min-w-[200px]">
-            {moreNavLinks}
-          </div>
-        )}
+        <Dropdown isOpen={isMoreOpen} onClose={() => setIsMoreOpen(false)}>
+          {moreNavLinks}
+        </Dropdown>
       </div>
     </>
   )
