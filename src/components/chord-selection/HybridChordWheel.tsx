@@ -234,10 +234,24 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: 'chord',
-      item: { chord },
+      item: () => {
+        // Enable pointer events when drag starts
+        if (ref.current) {
+          ref.current.style.pointerEvents = 'auto';
+          ref.current.style.zIndex = '20';
+        }
+        return { chord };
+      },
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),
       }),
+      end: () => {
+        // Disable pointer events when drag ends
+        if (ref.current) {
+          ref.current.style.pointerEvents = 'none';
+          ref.current.style.zIndex = '5';
+        }
+      },
     }),
     [chord]
   )
@@ -270,7 +284,7 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
         backgroundColor: isDragging ? color : 'transparent',
         borderRadius: '50%',
         border: isDragging ? '2px solid white' : 'none',
-        zIndex: 10,
+        zIndex: isDragging ? 20 : 5, // Lower z-index when not dragging to allow clicks
         transition: 'all 0.2s ease',
         display: 'flex',
         alignItems: 'center',
@@ -279,9 +293,29 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
         fontWeight: 'bold',
         color: 'white',
         textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+        pointerEvents: isDragging ? 'auto' : 'auto', // Always allow events for hover detection
       }}
-      onMouseEnter={() => onPreview(chord)}
-      onMouseLeave={onHoverEnd}
+      onMouseEnter={() => {
+        onPreview(chord);
+        // Only enable pointer events for dragging when specifically hovering to drag
+      }}
+      onMouseLeave={() => {
+        onHoverEnd();
+      }}
+      onMouseDown={() => {
+        // Enable drag mode on mouse down
+        if (ref.current) {
+          ref.current.style.pointerEvents = 'auto';
+          ref.current.style.zIndex = '20';
+        }
+      }}
+      onMouseUp={() => {
+        // Disable drag mode on mouse up
+        if (ref.current && !isDragging) {
+          ref.current.style.pointerEvents = 'none';
+          ref.current.style.zIndex = '5';
+        }
+      }}
     >
       {isDragging && chord}
     </div>
