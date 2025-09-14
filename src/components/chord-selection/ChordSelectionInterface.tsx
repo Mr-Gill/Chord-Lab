@@ -28,7 +28,7 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
     initAudio()
     
     // Import the chord definition to get proper notes
-    import('../../data/chords').then(({ chords }) => {
+    void import('../../data/chords').then(({ chords }) => {
       const chordDef = chords[chord]
       if (chordDef) {
         // Play the full chord using the piano notes from the chord definition
@@ -80,7 +80,7 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
     if (selectedChords.length >= 2) {
       // Navigate to practice mode with selected chords
       const chordsParam = selectedChords.join(',')
-      navigate(`/practice?chords=${encodeURIComponent(chordsParam)}`)
+      void navigate(`/practice?chords=${encodeURIComponent(chordsParam)}`)
     }
   }, [selectedChords, navigate])
 
@@ -89,7 +89,7 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
     void initAudio()
     
     // Import the chord definition to get proper notes
-    import('../../data/chords').then(({ chords }) => {
+    void import('../../data/chords').then(({ chords }) => {
       const chordDef = chords[chord]
       if (chordDef) {
         // Play the full chord using the piano notes from the chord definition

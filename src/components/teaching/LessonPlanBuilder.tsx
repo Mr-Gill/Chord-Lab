@@ -159,7 +159,7 @@ const LessonPlanBuilder: React.FC = () => {
                 </label>
                 <select
                   value={currentPlan.difficulty ?? 'beginner'}
-                  onChange={(e) => setCurrentPlan(prev => ({ ...prev, difficulty: e.target.value as any }))}
+                  onChange={(e) => setCurrentPlan(prev => ({ ...prev, difficulty: e.target.value as 'beginner' | 'intermediate' | 'advanced' }))}
                   className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                 >
                   <option value="beginner">Beginner</option>
@@ -196,7 +196,7 @@ const LessonPlanBuilder: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                {(currentPlan.steps || []).map((step, index) => (
+                {(currentPlan.steps ?? []).map((step, index) => (
                   <div key={step.id} className="p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -215,7 +215,7 @@ const LessonPlanBuilder: React.FC = () => {
                         <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Type</label>
                         <select
                           value={step.type}
-                          onChange={(e) => updateStep(step.id, { type: e.target.value as any })}
+                          onChange={(e) => updateStep(step.id, { type: e.target.value as 'chord' | 'exercise' | 'theory' | 'practice' })}
                           className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800"
                         >
                           {stepTypes.map(type => (
@@ -266,7 +266,7 @@ const LessonPlanBuilder: React.FC = () => {
                         <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Chords</label>
                         <select
                           multiple
-                          value={step.chords || []}
+                          value={step.chords ?? []}
                           onChange={(e) => updateStep(step.id, { 
                             chords: Array.from(e.target.selectedOptions, option => option.value)
                           })}
