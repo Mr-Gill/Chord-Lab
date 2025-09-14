@@ -59,7 +59,7 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
     
     // Import the chord definition to get proper notes
     import('../../data/chords').then(({ chords }) => {
-      const chordDef = chords[chord]
+      const chordDef = chords.find(c => c.name === chord)
       if (chordDef) {
         // Play the full chord using the piano notes from the chord definition
         playChord(chordDef.pianoNotes, 1.0, 'piano')
