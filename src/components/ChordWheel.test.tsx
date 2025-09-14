@@ -29,7 +29,7 @@ describe('ChordWheel', () => {
   it('should render the chord wheel with the default key of C', () => {
     renderWithProviders(<ChordWheel />)
 
-    expect(screen.getByText('Chord Wheel')).toBeInTheDocument()
+    expect(screen.getByText('🗝️ Chord Wheel')).toBeInTheDocument()
     expect(screen.getByText('C major')).toBeInTheDocument()
   })
 
@@ -48,7 +48,7 @@ describe('ChordWheel', () => {
   it('should change the key and update the diatonic chords', () => {
     renderWithProviders(<ChordWheel />)
 
-    const keySelector = screen.getByLabelText('Key')
+    const keySelector = screen.getByRole('combobox')
     fireEvent.change(keySelector, { target: { value: 'G' } })
 
     expect(screen.getByText('G major')).toBeInTheDocument()

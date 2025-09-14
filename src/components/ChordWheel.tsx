@@ -126,17 +126,18 @@ export default function ChordWheel() {
 
   return (
     <div className="w-full bg-white dark:bg-gray-800/50 rounded-2xl shadow-lg p-4 md:p-8">
-      <div className="flex items-center justify-between gap-4 mb-2">
-        <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Chord Wheel</h2>
-        <div className="flex items-center gap-2">
-          <label htmlFor="key-selector" className="text-sm text-gray-600 dark:text-gray-400">
-            Key
-          </label>
+      {/* Key-first workflow header */}
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">🗝️ Chord Wheel</h2>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          Pick a key from the wheel. Diatonic chords (I, ii, iii, IV, V, vi) are emphasized.
+        </p>
+        <div className="flex justify-center">
           <select
             id="key-selector"
             value={activeKey}
             onChange={e => setActiveKey(e.target.value)}
-            className="px-2 py-1 border border-gray-300 rounded-md bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
+            className="px-4 py-2 text-lg font-semibold border-2 border-gray-300 rounded-lg bg-white text-gray-800 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             {MAJORS_ORDER.map(k => (
               <option key={k} value={k}>
@@ -190,12 +191,12 @@ export default function ChordWheel() {
                     <path
                       d={outer}
                       fill={majColor}
-                      fillOpacity={isDiaMaj || isHovered ? 1 : 0.15}
-                      stroke={isDiaMaj || isHovered ? '#111827' : '#111'}
-                      strokeOpacity={isDiaMaj || isHovered ? 0.35 : 0.12}
-                      strokeWidth={isDiaMaj || isHovered ? 2 : 1}
+                      fillOpacity={isDiaMaj ? 1 : 0.3}
+                      stroke="#ffffff"
+                      strokeOpacity={isDiaMaj ? 0.8 : 0.3}
+                      strokeWidth={isDiaMaj ? 3 : 1}
                       filter={isDiaMaj || isHovered ? 'url(#glow)' : undefined}
-                      style={{ transition: 'all 120ms ease-out' }}
+                      style={{ transition: 'all 150ms ease-out' }}
                     />
                     <text
                       x={lxMaj}
@@ -204,10 +205,9 @@ export default function ChordWheel() {
                       dominantBaseline="middle"
                       fontSize={18}
                       fontWeight={800}
-                      fill="#0f172a"
-                      className="dark:fill-gray-900"
-                      opacity={isDiaMaj || isHovered ? 1 : 0.45}
-                      style={{ pointerEvents: 'none' }}
+                      fill="#ffffff"
+                      opacity={isDiaMaj ? 1 : 0.5}
+                      style={{ pointerEvents: 'none', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
                     >
                       {maj}
                     </text>
@@ -230,12 +230,12 @@ export default function ChordWheel() {
                     <path
                       d={inner}
                       fill={minColor}
-                      fillOpacity={isDiaMin || isHovered ? 1 : 0.15}
-                      stroke={isDiaMin || isHovered ? '#111827' : '#111'}
-                      strokeOpacity={isDiaMin || isHovered ? 0.35 : 0.12}
-                      strokeWidth={isDiaMin || isHovered ? 2 : 1}
+                      fillOpacity={isDiaMin ? 1 : 0.3}
+                      stroke="#ffffff"
+                      strokeOpacity={isDiaMin ? 0.8 : 0.3}
+                      strokeWidth={isDiaMin ? 3 : 1}
                       filter={isDiaMin || isHovered ? 'url(#glow)' : undefined}
-                      style={{ transition: 'all 120ms ease-out' }}
+                      style={{ transition: 'all 150ms ease-out' }}
                     />
                     <text
                       x={lxMin}
@@ -244,10 +244,9 @@ export default function ChordWheel() {
                       dominantBaseline="middle"
                       fontSize={14}
                       fontWeight={800}
-                      fill="#0f172a"
-                      className="dark:fill-gray-900"
-                      opacity={isDiaMin || isHovered ? 1 : 0.45}
-                      style={{ pointerEvents: 'none' }}
+                      fill="#ffffff"
+                      opacity={isDiaMin ? 1 : 0.5}
+                      style={{ pointerEvents: 'none', textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
                     >
                       {min}
                     </text>
@@ -277,10 +276,43 @@ export default function ChordWheel() {
           </g>
         </svg>
       </div>
-      <div className="mt-3 space-y-2">
-        <p className="text-sm text-gray-700 dark:text-gray-400">
-          <span className="font-semibold">In {activeKey} major</span>, highlighted sectors fit
-          well: I, IV, V majors and ii, iii, vi minors.
+      
+      {/* Roman numeral legend */}
+      <div className="mt-4 mb-6">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 text-center mb-3">
+          🎵 Roman Numeral Reference
+        </h3>
+        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-3 text-center text-sm">
+            {[
+              { roman: 'I', type: 'Major', description: 'Tonic' },
+              { roman: 'ii', type: 'minor', description: 'Supertonic' },
+              { roman: 'iii', type: 'minor', description: 'Mediant' },
+              { roman: 'IV', type: 'Major', description: 'Subdominant' },
+              { roman: 'V', type: 'Major', description: 'Dominant' },
+              { roman: 'vi', type: 'minor', description: 'Submediant' },
+            ].map(({ roman, type, description }) => (
+              <div key={roman} className="bg-white dark:bg-gray-600 rounded-md p-2 border">
+                <div className={`font-bold text-lg ${type === 'Major' ? 'text-blue-600' : 'text-purple-600'}`}>
+                  {roman}
+                </div>
+                <div className="text-xs text-gray-600 dark:text-gray-300">
+                  {type}
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {description}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      <div className="mt-4 space-y-3">
+        <p className="text-sm text-gray-700 dark:text-gray-400 text-center">
+          <span className="font-semibold">In {activeKey} major</span>, diatonic chords are fully colored with white text.
+          <br />
+          Non-diatonic chords are dimmed. Outer ring = majors; inner ring = relative minors.
         </p>
         <div className="flex flex-wrap gap-2">
           <button
@@ -296,8 +328,9 @@ export default function ChordWheel() {
             Practice {selected}
           </button>
         </div>
-        <p className="text-xs text-gray-500 dark:text-gray-500">
-          Tip: Click a sector to select it. Outer ring = majors; inner ring = relative minors.
+        <p className="text-xs text-gray-500 dark:text-gray-500 text-center">
+          💡 Key-first workflow: Pick a key above to see diatonic chords emphasized in full color.
+          Click any chord to hear it and practice.
         </p>
       </div>
     </div>
