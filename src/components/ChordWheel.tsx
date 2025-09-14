@@ -80,7 +80,7 @@ export default function ChordWheel() {
     const thirdIndex = (rootIndex + (isMinor ? 3 : 4)) % 12
     const fifthIndex = (rootIndex + 7) % 12
     return [
-      `${root}4`,
+      `${NOTE_SEQUENCE[rootIndex]}4`,
       `${NOTE_SEQUENCE[thirdIndex]}4`,
       `${NOTE_SEQUENCE[fifthIndex]}4`,
     ]
