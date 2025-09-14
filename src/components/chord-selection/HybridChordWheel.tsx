@@ -233,8 +233,6 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
   angle,
   ring,
   color,
-  isSelected,
-  isHovered,
   onPreview,
   onHoverEnd
 }) => {
