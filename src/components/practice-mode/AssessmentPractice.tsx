@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, type FC } from 'react';
 import useMetronome from '../../hooks/useMetronome';
-import useAudio from '../../hooks/useAudio';
+import { useAudioContext } from '../../contexts/AudioProvider';
 import ChordDisplay from './ChordDisplay';
 import { chordList as chords, type Chord } from '../../data/chords';
 import { InstrumentPanel } from './InstrumentPanel';
@@ -39,7 +39,7 @@ const AssessmentPractice: FC<AssessmentPracticeProps> = ({ onClose }) => {
   const [practiceSession, setPracticeSession] = useState<'intro' | 'performance' | 'complete'>('intro');
   const [performanceBars, setPerformanceBars] = useState(0);
   const [{ isPlaying, bpm }, { start, stop, setBpm }] = useMetronome(60, 4);
-  const { playChord, fretToNote } = useAudio();
+  const { playChord, fretToNote } = useAudioContext();
 
   const progression = assessmentType === 'year7' ? YEAR_7_PROGRESSION : (selectedSong?.progression || []);
   const currentChordName = progression[currentChordIndex];

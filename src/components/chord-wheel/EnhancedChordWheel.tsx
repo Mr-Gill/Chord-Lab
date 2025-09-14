@@ -3,7 +3,7 @@ import { useDrag, useDrop, DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { getChordTheme } from '../../utils/diagramTheme';
 import { KEY_DEGREES, getRomanNumeral, isDiatonicChord } from '../../utils/key-degrees';
-import useAudio from '../../hooks/useAudio';
+import { useAudioContext } from '../../contexts/AudioProvider';
 
 interface EnhancedChordWheelProps {
   selectedKey: string;
@@ -144,7 +144,7 @@ const EnhancedChordWheel: React.FC<EnhancedChordWheelProps> = ({
   const radius = 140;
   const step = (Math.PI * 2) / 12;
 
-  const { initAudio, playChord } = useAudio();
+  const { initAudio } = useAudioContext();
 
   const handleChordSelect = useCallback((chord: string) => {
     initAudio();
