@@ -10,14 +10,13 @@ import { ScoreboardProvider } from './components/classroom/Scoreboard'
 import { ChordBuilderProvider } from './contexts/ChordBuilderContext';
 import { CollaborationProvider } from './contexts/CollaborationContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
-import Dropdown from './components/common/Dropdown';
 import './styles/responsive-diagrams.css'
 import { StudentView } from './components/student/StudentView';
 
 // Lazy-loaded components for code splitting
 const Dashboard = lazy(() => import('./components/Dashboard'))
 const ChordProgressionBuilder = lazy(() => import('./components/chord-builder/ChordProgressionBuilder'))
-const PracticeMode = lazy(() => import('./components/practice-mode/PracticeMode'))
+const PracticeMode = lazy(() => import('./components/practice-mode/PracticeModeWrapper'))
 const Metronome = lazy(() => import('./components/practice-mode/Metronome'))
 const LearningPathway = lazy(() => import('./components/learning-path/LearningPathway'))
 const ChordWheel = lazy(() => import('./components/ChordWheel'))
@@ -46,6 +45,7 @@ function App() {
   const { classroomMode, toggleClassroomMode } = useClassroomMode()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMoreOpen, setIsMoreOpen] = useState(false)
+  const [showAdvanced, setShowAdvanced] = useState(false)
   const { theme, setTheme } = useTheme()
   // --- MERGED HOOK (from feature/code-improvements) ---
   const { profile } = useUserProfile()
@@ -57,75 +57,52 @@ function App() {
   const coreNavLinks = (
     <>
       <NavLink to="/" end className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Home
-      </NavLink>
-      <NavLink to="/choose-chords" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Choose Chords
-      </NavLink>
-      <NavLink to="/practice" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Practice
+        🎸 Practice
       </NavLink>
       <NavLink to="/learn" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Learn
+        📚 Learn
+      </NavLink>
+      <NavLink to="/profile" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
+        👤 Profile
       </NavLink>
     </>
   )
 
-  const moreNavLinks = (
+  const advancedNavLinks = showAdvanced ? (
     <>
-      <NavLink to="/create" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Chord Builder
+      <NavLink to="/dashboard" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
+        🏠 Dashboard
       </NavLink>
-      <NavLink
-        to="/practice/scrolling"
-        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}
-      >
-        Scrolling
+      <NavLink to="/choose-chords" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
+        🎡 Choose Chords
+      </NavLink>
+      <NavLink to="/create" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
+        🔧 Chord Builder
       </NavLink>
       <NavLink to="/wheel" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Chord Wheel
+        ⚙️ Chord Wheel
       </NavLink>
       <NavLink to="/metronome" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Metronome
-      </NavLink>
-      <NavLink to="/classroom/enhanced" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Enhanced Classroom
-      </NavLink>
-      <NavLink to="/classroom" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Classroom
-      </NavLink>
-      <NavLink to="/profile" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Profile
+        🎵 Metronome
       </NavLink>
       <NavLink to="/theory" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
-        Theory
+        📖 Theory
       </NavLink>
     </>
-  )
+  ) : null
 
   const navLinks = (
     <>
       {coreNavLinks}
-      <div className="relative">
+      {advancedNavLinks}
+      {showAdvanced && (
         <button
-          onClick={() => setIsMoreOpen(!isMoreOpen)}
-          className={`${linkBase} ${linkIdle} flex items-center hover:shadow-md`}
+          onClick={() => setShowAdvanced(false)}
+          className={`${linkBase} ${linkIdle} text-orange-600 hover:text-orange-700 border border-orange-300 hover:border-orange-400`}
         >
-          More
-          <svg
-            className={`w-4 h-4 ml-2 transition-transform duration-300 ${isMoreOpen ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 9l6 6 6-6" />
-          </svg>
+          ✨ Simple Mode
         </button>
-        <Dropdown isOpen={isMoreOpen} onClose={() => setIsMoreOpen(false)}>
-          {moreNavLinks}
-        </Dropdown>
-      </div>
+      )}
     </>
   )
 
@@ -162,6 +139,15 @@ function App() {
                 >
                   {classroomMode ? '🎓 Classroom: On' : 'Classroom: Off'}
                 </button>
+                {!showAdvanced && (
+                  <button
+                    onClick={() => setShowAdvanced(true)}
+                    className="px-4 py-2.5 rounded-xl border font-medium transition-all duration-300 bg-white/80 border-gray-300 text-gray-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 hover:text-purple-600 dark:bg-gray-800/80 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                    title="Show advanced features for experienced users"
+                  >
+                    🔧 Advanced
+                  </button>
+                )}
                 <button
                   onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
                   className="p-3 rounded-xl border bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 dark:bg-gray-800/80 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-all duration-300"
@@ -227,10 +213,25 @@ function App() {
               <nav className="md:hidden bg-white/95 dark:bg-gray-800/95 shadow-xl absolute top-full left-0 right-0 z-10 backdrop-blur-lg border-t border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex flex-col gap-2 p-4">
                   {coreNavLinks}
-                  <details>
-                    <summary className={`${linkBase} ${linkIdle} cursor-pointer`}>More</summary>
-                    <div className="flex flex-col gap-2 mt-2 pl-4">{moreNavLinks}</div>
-                  </details>
+                  {!showAdvanced && (
+                    <button
+                      onClick={() => setShowAdvanced(true)}
+                      className={`${linkBase} ${linkIdle} text-purple-600 hover:text-purple-700 border border-purple-300 hover:border-purple-400`}
+                    >
+                      🔧 Show Advanced Features
+                    </button>
+                  )}
+                  {showAdvanced && (
+                    <>
+                      {advancedNavLinks}
+                      <button
+                        onClick={() => setShowAdvanced(false)}
+                        className={`${linkBase} ${linkIdle} text-orange-600 hover:text-orange-700 border border-orange-300 hover:border-orange-400`}
+                      >
+                        ✨ Simple Mode
+                      </button>
+                    </>
+                  )}
                 </div>
               </nav>
             )}
@@ -240,7 +241,8 @@ function App() {
             <Suspense fallback={<LoadingSpinner />}>
               <ChordBuilderProvider>
                 <Routes>
-                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/" element={<PracticeMode />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/choose-chords" element={<ChordSelectionInterface />} />
                   <Route path="/create" element={<ChordProgressionBuilder />} />
                   <Route path="/practice" element={<PracticeMode />} />
