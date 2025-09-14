@@ -48,9 +48,9 @@ function App() {
   // --- MERGED HOOK (from feature/code-improvements) ---
   const { profile } = useUserProfile()
 
-  const linkBase = 'px-3 py-2 rounded-lg whitespace-nowrap block'
-  const linkActive = 'bg-blue-600 text-white'
-  const linkIdle = 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+  const linkBase = 'px-4 py-2.5 rounded-xl whitespace-nowrap block font-medium transition-all duration-300'
+  const linkActive = 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transform scale-105'
+  const linkIdle = 'text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:text-purple-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-purple-400'
 
   const coreNavLinks = (
     <>
@@ -104,11 +104,11 @@ function App() {
       <div className="relative">
         <button
           onClick={() => setIsMoreOpen(!isMoreOpen)}
-          className={`${linkBase} ${linkIdle} flex items-center`}
+          className={`${linkBase} ${linkIdle} flex items-center hover:shadow-md`}
         >
           More
           <svg
-            className="w-4 h-4 ml-1"
+            className={`w-4 h-4 ml-2 transition-transform duration-300 ${isMoreOpen ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -118,7 +118,7 @@ function App() {
           </svg>
         </button>
         {isMoreOpen && (
-          <div className="absolute right-0 mt-2 flex flex-col bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-2 z-20">
+          <div className="absolute right-0 mt-2 flex flex-col bg-white/95 dark:bg-gray-800/95 border border-gray-200/50 dark:border-gray-700/50 rounded-2xl shadow-2xl backdrop-blur-lg p-3 z-20 min-w-[200px]">
             {moreNavLinks}
           </div>
         )}
@@ -131,7 +131,7 @@ function App() {
       <CollaborationProvider>
         <ErrorBoundary>
         <div
-          className={`min-h-screen bg-white dark:bg-gray-900 ${
+          className={`min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 ${
             classroomMode ? 'text-[110%] contrast-125' : ''
           }`}
         >
@@ -139,29 +139,29 @@ function App() {
           {!profile.onboardingComplete && <OnboardingFlow />}
           {/* --- MERGED JSX (from main branch) --- */}
           <AchievementToast />
-          <header className="bg-white dark:bg-gray-900/80 dark:border-b dark:border-gray-700 shadow-sm relative backdrop-blur-lg">
-            <div className="w-full mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <span className="font-extrabold text-xl text-gray-900 dark:text-gray-100">
+          <header className="bg-white/95 dark:bg-gray-900/95 dark:border-b dark:border-gray-700/50 shadow-lg relative backdrop-blur-lg">
+            <div className="w-full mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-6">
+                <span className="font-extrabold text-2xl bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent">
                   Chord Lab
                 </span>
-                <nav className="hidden md:flex gap-2">{navLinks}</nav>
+                <nav className="hidden md:flex gap-1">{navLinks}</nav>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={toggleClassroomMode}
-                  className={`px-3 py-2 rounded-lg border ${
+                  className={`px-4 py-2.5 rounded-xl border font-medium transition-all duration-300 ${
                     classroomMode
-                      ? 'bg-yellow-100 border-yellow-300 text-yellow-900'
-                      : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                      ? 'bg-gradient-to-r from-yellow-400 to-orange-500 border-yellow-300 text-white shadow-lg'
+                      : 'bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 dark:bg-gray-800/80 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
                   }`}
                   title="Classroom Mode: larger text and higher contrast"
                 >
-                  {classroomMode ? 'Classroom: On' : 'Classroom: Off'}
+                  {classroomMode ? '🎓 Classroom: On' : 'Classroom: Off'}
                 </button>
                 <button
                   onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                  className="px-2 py-1 rounded-lg border bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                  className="p-3 rounded-xl border bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 dark:bg-gray-800/80 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-all duration-300"
                   aria-label="Toggle theme"
                 >
                   {theme === 'light' ? (
@@ -200,7 +200,7 @@ function App() {
                 </button>
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="md:hidden px-2 py-1 rounded-lg border bg-white border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                  className="md:hidden p-3 rounded-xl border bg-white/80 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 dark:bg-gray-800/80 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 transition-all duration-300"
                   aria-label="Toggle menu"
                 >
                   <svg
@@ -221,12 +221,12 @@ function App() {
               </div>
             </div>
             {isMenuOpen && (
-              <nav className="md:hidden bg-white dark:bg-gray-800 shadow-md absolute top-full left-0 right-0 z-10">
-                <div className="flex flex-col gap-1 p-2">
+              <nav className="md:hidden bg-white/95 dark:bg-gray-800/95 shadow-xl absolute top-full left-0 right-0 z-10 backdrop-blur-lg border-t border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex flex-col gap-2 p-4">
                   {coreNavLinks}
                   <details>
                     <summary className={`${linkBase} ${linkIdle} cursor-pointer`}>More</summary>
-                    <div className="flex flex-col gap-1 mt-1 pl-4">{moreNavLinks}</div>
+                    <div className="flex flex-col gap-2 mt-2 pl-4">{moreNavLinks}</div>
                   </details>
                 </div>
               </nav>
