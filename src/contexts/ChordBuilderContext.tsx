@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import type { ReactNode, Dispatch, SetStateAction } from 'react'
 
 interface Chord {
@@ -21,8 +21,15 @@ export function ChordBuilderProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem('chordProgression');
     return saved ? JSON.parse(saved) : [];
   });
-  
-  const [selectedKey, setSelectedKey] = useState('C');
+
+  const [selectedKey, setSelectedKey] = useState(() => {
+    return localStorage.getItem('selectedKey') || 'C';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('chordProgression', JSON.stringify(chords));
+    localStorage.setItem('selectedKey', selectedKey);
+  }, [chords, selectedKey]);
 
   return (
     <ChordBuilderContext.Provider value={{ chords, setChords, selectedKey, setSelectedKey }}>
