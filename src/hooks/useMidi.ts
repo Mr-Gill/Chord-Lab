@@ -101,6 +101,12 @@ export const useMidi = () => {
     }
   }, [recording]);
 
+  const setupInputListeners = useCallback((access: MIDIAccess) => {
+    access.inputs.forEach((input) => {
+      input.onmidimessage = handleMidiMessage;
+    });
+  }, [handleMidiMessage]);
+
   // Setup listeners when MIDI access or message handler changes
   useEffect(() => {
     if (!midiAccess) return;
@@ -118,12 +124,6 @@ export const useMidi = () => {
       });
     };
   }, [midiAccess, handleMidiMessage, updateDeviceList, setupInputListeners]);
-
-  const setupInputListeners = useCallback((access: MIDIAccess) => {
-    access.inputs.forEach((input) => {
-      input.onmidimessage = handleMidiMessage;
-    });
-  }, [handleMidiMessage]);
 
   const startRecording = () => {
     setRecording(true);
