@@ -54,6 +54,27 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
     playChord(notes, 0.4)
   }, [initAudio, playChord])
 
+  const handleChordClick = useCallback((chord: string) => {
+    initAudio()
+    
+    // Import the chord definition to get proper notes
+    import('../../data/chords').then(({ chords }) => {
+      const chordDef = chords[chord]
+      if (chordDef) {
+        // Play the full chord using the piano notes from the chord definition
+        playChord(chordDef.pianoNotes, 1.0, 'piano')
+      } else {
+        // Fallback to root note if chord definition not found
+        const notes = [chord.replace('m', '') + '4']
+        playChord(notes, 1.0)
+      }
+    }).catch(() => {
+      // Fallback if import fails
+      const notes = [chord.replace('m', '') + '4']
+      playChord(notes, 1.0)
+    })
+  }, [initAudio, playChord])
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
@@ -86,6 +107,7 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
                   hoveredChord={hoveredChord}
                   onPreview={handleChordPreview}
                   onHoverEnd={() => setHoveredChord(null)}
+                  onChordClick={handleChordClick}
                 />
               </div>
             </div>

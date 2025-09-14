@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { useDrag } from 'react-dnd'
 
 // Color scheme for different chord families based on Circle of Fifths
@@ -72,6 +72,7 @@ interface DraggableChordButtonProps {
   isHovered: boolean
   onPreview: (chord: string) => void
   onHoverEnd: () => void
+  onChordClick: (chord: string) => void
 }
 
 const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
@@ -82,9 +83,11 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
   isSelected,
   isHovered,
   onPreview,
-  onHoverEnd
+  onHoverEnd,
+  onChordClick
 }) => {
   const ref = useRef<HTMLDivElement>(null)
+  const [isClicked, setIsClicked] = useState(false)
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -99,6 +102,13 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
 
   drag(ref)
 
+  const handleClick = () => {
+    onChordClick(chord)
+    // Visual feedback for click
+    setIsClicked(true)
+    setTimeout(() => setIsClicked(false), 300)
+  }
+
   // Calculate position based on angle and ring
   const centerX = 250
   const centerY = 250
@@ -111,8 +121,9 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
   const fontSize = ring === 'major' ? 'text-sm' : 'text-xs'
   
   const opacity = isDragging ? 0.5 : isSelected ? 0.95 : isHovered ? 0.9 : 0.8
-  const scale = isDragging ? 1.1 : isHovered ? 1.05 : 1
-  const borderWidth = isSelected ? '3px' : isHovered ? '2px' : '1px'
+  const scale = isDragging ? 1.1 : isClicked ? 1.15 : isHovered ? 1.05 : 1
+  const borderWidth = isSelected ? '3px' : isHovered || isClicked ? '2px' : '1px'
+  const borderColor = isClicked ? '#fbbf24' : isSelected ? '#ffffff' : isHovered ? '#e5e7eb' : '#d1d5db'
 
   return (
     <div
@@ -125,28 +136,29 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
         height: size,
         backgroundColor: color,
         borderRadius: '50%',
-        border: `${borderWidth} solid ${isSelected ? '#ffffff' : isHovered ? '#e5e7eb' : '#d1d5db'}`,
+        border: `${borderWidth} solid ${borderColor}`,
         opacity,
         transform: `scale(${scale})`,
         cursor: isDragging ? 'grabbing' : 'grab',
         transition: 'all 0.2s ease',
-        boxShadow: (isHovered || isSelected) ? `0 0 20px ${color}40` : 'none',
+        boxShadow: (isHovered || isSelected || isClicked) ? `0 0 20px ${color}40` : 'none',
         zIndex: 10,
       }}
       onMouseEnter={() => onPreview(chord)}
       onMouseLeave={onHoverEnd}
+      onClick={handleClick}
       className={`flex items-center justify-center text-white font-bold ${fontSize} select-none`}
     >
-      {/* Glow effect for hovered/selected chords */}
-      {(isHovered || isSelected) && (
+      {/* Glow effect for hovered/selected/clicked chords */}
+      {(isHovered || isSelected || isClicked) && (
         <div
           style={{
             position: 'absolute',
             inset: '-8px',
             borderRadius: '50%',
-            backgroundColor: color,
-            opacity: 0.3,
-            animation: 'pulse 2s infinite',
+            backgroundColor: isClicked ? '#fbbf24' : color,
+            opacity: isClicked ? 0.5 : 0.3,
+            animation: isClicked ? 'pulse 0.3s ease-out' : 'pulse 2s infinite',
           }}
         />
       )}
@@ -178,13 +190,15 @@ interface HybridChordWheelProps {
   hoveredChord: string | null
   onPreview: (chord: string) => void
   onHoverEnd: () => void
+  onChordClick: (chord: string) => void
 }
 
 export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
   selectedChords,
   hoveredChord,
   onPreview,
-  onHoverEnd
+  onHoverEnd,
+  onChordClick
 }) => {
   // Generate SVG path for a segment
   const generateSegmentPath = (angle: number, ring: 'major' | 'minor') => {
@@ -349,6 +363,7 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
           isHovered={hoveredChord === chord}
           onPreview={onPreview}
           onHoverEnd={onHoverEnd}
+          onChordClick={onChordClick}
         />
       ))}
     </div>
