@@ -1,35 +1,35 @@
 import React, { useRef, useState } from 'react'
 import { useDrag } from 'react-dnd'
 
-// Color scheme for different chord families based on Circle of Fifths
+// Improved color scheme matching the reference design - cleaner, more professional
 const CHORD_COLORS = {
-  // Major chords - outer ring (brighter, more saturated colors)
-  'C': '#5dade2',   // Bright blue
-  'G': '#58d68d',   // Bright green  
-  'D': '#f39c12',   // Bright orange
-  'A': '#e74c3c',   // Bright red
-  'E': '#9b59b6',   // Bright purple
-  'B': '#3498db',   // Bright blue
-  'F#': '#1abc9c',  // Bright teal
-  'Db': '#85c1e9',  // Light blue
-  'Ab': '#76d7c4',  // Light teal
-  'Eb': '#bb8fce',  // Light purple
-  'Bb': '#d7bde2',  // Light lavender
-  'F': '#f8c471',   // Light orange
+  // Major chords - outer ring (harmonious, professional colors with better gradients)
+  'C': '#4a90e2',   // Professional blue
+  'G': '#50c878',   // Professional green  
+  'D': '#ff8c42',   // Professional orange
+  'A': '#ff6b6b',   // Professional coral red
+  'E': '#a855f7',   // Professional purple
+  'B': '#3b82f6',   // Professional blue
+  'F#': '#14b8a6',  // Professional teal
+  'Db': '#60a5fa',  // Light professional blue
+  'Ab': '#4fd1c7',  // Light professional teal
+  'Eb': '#c084fc',  // Light professional purple
+  'Bb': '#d8b4fe',  // Light professional lavender
+  'F': '#fbbf24',   // Professional yellow/gold
   
-  // Minor chords - inner ring (muted, darker versions)
-  'Am': '#2980b9',  // Dark blue
-  'Em': '#27ae60',  // Dark green
-  'Bm': '#d35400',  // Dark orange
-  'F#m': '#c0392b', // Dark red
-  'C#m': '#8e44ad', // Dark purple
-  'G#m': '#2471a3', // Dark blue
-  'D#m': '#148f77', // Dark teal
-  'Bbm': '#5499c7', // Medium blue
-  'Fm': '#52c4a0',  // Medium teal
-  'Cm': '#a569bd',  // Medium purple
-  'Gm': '#c39bd3',  // Medium lavender
-  'Dm': '#f4d03f',  // Medium yellow
+  // Minor chords - inner ring (coordinated darker versions with better contrast)
+  'Am': '#1e40af',  // Deep professional blue
+  'Em': '#059669',  // Deep professional green
+  'Bm': '#ea580c',  // Deep professional orange
+  'F#m': '#dc2626', // Deep professional red
+  'C#m': '#7c3aed', // Deep professional purple
+  'G#m': '#1d4ed8', // Deep professional blue
+  'D#m': '#0d9488', // Deep professional teal
+  'Bbm': '#2563eb', // Medium professional blue
+  'Fm': '#10b981',  // Medium professional teal
+  'Cm': '#8b5cf6',  // Medium professional purple
+  'Gm': '#a78bfa',  // Medium professional lavender
+  'Dm': '#f59e0b',  // Medium professional amber
 }
 
 // Circle of Fifths layout - 12 positions around the circle
@@ -130,37 +130,48 @@ const ChordSegment: React.FC<ChordSegmentProps> = ({
   const textX = centerX + textRadius * Math.cos(textAngle)
   const textY = centerY + textRadius * Math.sin(textAngle)
 
-  // Dynamic styling based on state
-  const opacity = isSelected ? 1 : isHovered ? 0.9 : 0.8
-  const strokeWidth = isSelected ? 3 : isHovered || isClicked ? 2 : 1
-  const strokeColor = isClicked ? '#fbbf24' : isSelected ? '#ffffff' : isHovered ? '#e5e7eb' : 'rgba(255,255,255,0.3)'
-  const fontSize = ring === 'major' ? '14' : '12'
+  // Enhanced styling for professional appearance matching reference design
+  const opacity = isSelected ? 1 : isHovered ? 0.95 : 0.85
+  const strokeWidth = isSelected ? 3 : isHovered || isClicked ? 2.5 : 0.5
+  const strokeColor = isClicked ? '#fbbf24' : isSelected ? '#ffffff' : isHovered ? '#ffffff' : 'rgba(255,255,255,0.2)'
+  const fontSize = ring === 'major' ? '15' : '13'
   const fontWeight = isSelected || isHovered ? 'bold' : '600'
+  
+  // Enhanced gradient effect for more professional appearance
+  const gradientId = `gradient-${chord}-${ring}`
 
   return (
     <g
       style={{
         cursor: 'pointer',
-        transition: 'all 0.2s ease',
+        transition: 'all 0.3s ease',
       }}
       onMouseEnter={() => onPreview(chord)}
       onMouseLeave={onHoverEnd}
       onClick={handleClick}
     >
-      {/* Main segment */}
+      {/* Gradient definition for this segment */}
+      <defs>
+        <radialGradient id={gradientId} cx="50%" cy="50%" r="100%">
+          <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.9 }} />
+          <stop offset="100%" style={{ stopColor: color, stopOpacity: 1 }} />
+        </radialGradient>
+      </defs>
+      
+      {/* Main segment with gradient fill */}
       <path
         d={path}
-        fill={color}
+        fill={`url(#${gradientId})`}
         opacity={opacity}
         stroke={strokeColor}
         strokeWidth={strokeWidth}
-        className="transition-all duration-200"
+        className="transition-all duration-300"
         style={{
-          filter: (isHovered || isSelected || isClicked) ? `drop-shadow(0 0 10px ${color}80)` : 'none',
+          filter: (isHovered || isSelected || isClicked) ? `drop-shadow(0 4px 12px ${color}60) brightness(1.1)` : 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
         }}
       />
       
-      {/* Chord name text */}
+      {/* Enhanced chord name text */}
       <text
         x={textX}
         y={textY}
@@ -171,22 +182,25 @@ const ChordSegment: React.FC<ChordSegmentProps> = ({
         fill="white"
         className="select-none pointer-events-none"
         style={{
-          textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+          textShadow: '0 2px 4px rgba(0,0,0,0.8)',
           filter: isClicked ? 'brightness(1.5)' : 'none',
         }}
       >
         {chord}
       </text>
       
-      {/* Click glow effect */}
+      {/* Enhanced click glow effect */}
       {isClicked && (
         <path
           d={path}
           fill="none"
           stroke="#fbbf24"
-          strokeWidth="3"
-          opacity="0.8"
+          strokeWidth="4"
+          opacity="0.9"
           className="animate-ping"
+          style={{
+            filter: 'drop-shadow(0 0 8px #fbbf24)',
+          }}
         />
       )}
     </g>
@@ -292,7 +306,7 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
 }) => {
   return (
     <div className="flex items-center justify-center w-full h-[500px] relative">
-      {/* SVG-based segmented chord wheel */}
+      {/* SVG-based segmented chord wheel with enhanced styling */}
       <svg 
         width="500" 
         height="500" 
@@ -300,33 +314,41 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
         className="w-full h-full max-w-[500px] max-h-[500px] absolute"
         style={{ zIndex: 1 }}
       >
-        {/* Reference circles for visual structure */}
+        {/* Enhanced background with subtle gradient */}
+        <defs>
+          <radialGradient id="wheelBackground" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style={{ stopColor: 'rgba(30, 41, 59, 0.95)', stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: 'rgba(15, 23, 42, 0.98)', stopOpacity: 1 }} />
+          </radialGradient>
+        </defs>
+        
+        {/* Professional reference circles for visual structure */}
         <circle
           cx="250"
           cy="250"
           r="200"
           fill="none"
-          stroke="rgba(255,255,255,0.2)"
-          strokeWidth="1"
+          stroke="rgba(255,255,255,0.15)"
+          strokeWidth="0.5"
         />
         <circle
           cx="250"
           cy="250"
           r="140"
           fill="none"
-          stroke="rgba(255,255,255,0.2)"
-          strokeWidth="1"
+          stroke="rgba(255,255,255,0.15)"
+          strokeWidth="0.5"
         />
         <circle
           cx="250"
           cy="250"
           r="80"
           fill="none"
-          stroke="rgba(255,255,255,0.2)"
-          strokeWidth="1"
+          stroke="rgba(255,255,255,0.15)"
+          strokeWidth="0.5"
         />
         
-        {/* Chord segments - visual only */}
+        {/* Chord segments - enhanced visual design */}
         {CHORD_WHEEL_DATA.map(({ chord, angle, ring, color }) => (
           <ChordSegment
             key={chord}
@@ -342,24 +364,28 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
           />
         ))}
         
-        {/* Center circle with instructions */}
+        {/* Enhanced center circle with gradient background */}
         <circle
           cx="250"
           cy="250"
           r="75"
-          fill="rgba(30, 41, 59, 0.95)"
-          stroke="rgba(255,255,255,0.3)"
-          strokeWidth="2"
+          fill="url(#wheelBackground)"
+          stroke="rgba(255,255,255,0.2)"
+          strokeWidth="1.5"
+          style={{
+            filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))',
+          }}
         />
         
-        {/* Center text */}
+        {/* Enhanced center text with better typography */}
         <text
           x="250"
           y="235"
           textAnchor="middle"
-          fontSize="13"
+          fontSize="12"
           fill="rgba(255,255,255,0.9)"
           fontWeight="600"
+          style={{ letterSpacing: '0.5px' }}
         >
           Drag chords
         </text>
@@ -367,9 +393,10 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
           x="250"
           y="252"
           textAnchor="middle"
-          fontSize="13"
+          fontSize="12"
           fill="rgba(255,255,255,0.9)"
           fontWeight="600"
+          style={{ letterSpacing: '0.5px' }}
         >
           to build your
         </text>
@@ -377,31 +404,40 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
           x="250"
           y="269"
           textAnchor="middle"
-          fontSize="13"
+          fontSize="12"
           fill="rgba(255,255,255,0.9)"
           fontWeight="600"
+          style={{ letterSpacing: '0.5px' }}
         >
           progression
         </text>
         
-        {/* Ring labels */}
+        {/* Enhanced ring labels with professional styling */}
         <text
           x="250"
-          y="45"
+          y="42"
           textAnchor="middle"
           fontSize="16"
-          fill="rgba(255,255,255,0.8)"
+          fill="rgba(255,255,255,0.95)"
           fontWeight="700"
+          style={{ 
+            letterSpacing: '1px',
+            textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+          }}
         >
           Major Chords
         </text>
         <text
           x="250"
-          y="395"
+          y="398"
           textAnchor="middle"
           fontSize="14"
-          fill="rgba(255,255,255,0.6)"
+          fill="rgba(255,255,255,0.8)"
           fontWeight="600"
+          style={{ 
+            letterSpacing: '0.8px',
+            textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+          }}
         >
           Minor Chords
         </text>
