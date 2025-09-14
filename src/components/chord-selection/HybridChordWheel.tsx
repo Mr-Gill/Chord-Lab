@@ -1,35 +1,35 @@
 import React, { useRef, useState } from 'react'
 import { useDrag } from 'react-dnd'
 
-// Reference-inspired color scheme - sophisticated, harmonious palette matching the provided image
+// Chord colors from the standardized color scheme
 const CHORD_COLORS = {
-  // Major chords - outer ring (sophisticated palette inspired by the reference)
-  'C': '#7dd3fc',   // Soft cyan (top of reference)
-  'G': '#86efac',   // Soft green (right side)  
-  'D': '#fbbf24',   // Golden yellow (bottom right)
-  'A': '#f87171',   // Soft coral (right)
-  'E': '#c084fc',   // Soft purple (bottom)
-  'B': '#60a5fa',   // Soft blue (bottom left)
-  'F#': '#34d399',  // Mint green (left)
-  'Db': '#93c5fd',  // Light blue
-  'Ab': '#a7f3d0',  // Light mint
-  'Eb': '#d8b4fe',  // Light purple
-  'Bb': '#e5e7eb',  // Light gray
-  'F': '#fed7aa',   // Light peach
+  // Major chords - outer ring
+  'C': '#cc39bc',
+  'G': '#714faa',
+  'D': '#3b8bf9',
+  'A': '#02c7f9',
+  'E': '#00e3e2',
+  'B': '#00d48e',
+  'F#': '#37b838',
+  'Db': '#79c505',
+  'Ab': '#fdd500',
+  'Eb': '#ff6813',
+  'Bb': '#ff4b2c',
+  'F': '#ff2a44',
   
-  // Minor chords - inner ring (deeper, more saturated versions)
-  'Am': '#0ea5e9',  // Deep cyan
-  'Em': '#22c55e',  // Deep green
-  'Bm': '#f59e0b',  // Deep amber
-  'F#m': '#ef4444', // Deep red
-  'C#m': '#a855f7', // Deep purple
-  'G#m': '#3b82f6', // Deep blue
-  'D#m': '#10b981', // Deep emerald
-  'Bbm': '#6366f1', // Deep indigo
-  'Fm': '#14b8a6',  // Deep teal
-  'Cm': '#8b5cf6',  // Deep violet
-  'Gm': '#9333ea',  // Deep purple
-  'Dm': '#ea580c',  // Deep orange
+  // Minor chords - inner ring
+  'Am': '#ab369e',
+  'Em': '#624890',
+  'Bm': '#3777cf',
+  'F#m': '#08a6cf',
+  'C#m': '#06bebe',
+  'G#m': '#05b17a',
+  'D#m': '#339c35',
+  'Bbm': '#69a50b',
+  'Fm': '#d2b207',
+  'Cm': '#d45a16',
+  'Gm': '#d4442a',
+  'Dm': '#d4293f',
 }
 
 // Circle of Fifths layout - 12 positions around the circle

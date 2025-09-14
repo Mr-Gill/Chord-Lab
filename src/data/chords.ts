@@ -36,7 +36,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 6, fret: 3, finger: 4 },
     ],
     level: 1,
-    color: "#ff9900"
+    color: "#714faa"
   },
   D: {
     pianoNotes: ['D4', 'F#4', 'A4'],
@@ -46,7 +46,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 3, fret: 2, finger: 1 },
     ],
     level: 1,
-    color: "#33cc33"
+    color: "#3b8bf9"
   },
   A: {
     pianoNotes: ['A3', 'C#4', 'E4'],
@@ -72,7 +72,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 0, finger: 0 }, // Open high E
     ],
     level: 1,
-    color: "#ff33cc"
+    color: "#00e3e2"
   },
   F: {
     pianoNotes: ['F3', 'A3', 'C4'],
@@ -83,7 +83,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 4, fret: 3, finger: 3 },
     ],
     level: 1,
-    color: "#ccccff"
+    color: "#ff2a44"
   },
   Bb: {
     pianoNotes: ['Bb3', 'D4', 'F4'],
@@ -95,7 +95,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 1, finger: 1 },
     ],
     level: 1,
-    color: "#ff66cc"
+    color: "#ff4b2c"
   },
   Eb: {
     pianoNotes: ['Eb4', 'G4', 'Bb4'],
@@ -107,7 +107,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 6, finger: 1 },
     ],
     level: 1,
-    color: "#33cccc"
+    color: "#ff6813"
   },
   Ab: {
     pianoNotes: ['Ab3', 'C4', 'Eb4'],
@@ -120,7 +120,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 4, finger: 1 },
     ],
     level: 1,
-    color: "#66ffcc"
+    color: "#fdd500"
   },
   Db: {
     pianoNotes: ['Db4', 'F4', 'Ab4'],
@@ -132,7 +132,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 4, finger: 1 },
     ],
     level: 1,
-    color: "#ff99cc"
+    color: "#79c505"
   },
   'F#': {
     pianoNotes: ['F#3', 'A#3', 'C#4'],
@@ -157,7 +157,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 2, finger: 1 },
     ],
     level: 1,
-    color: "#ffccff"
+    color: "#00d48e"
   },
   Am: {
     pianoNotes: ['A3', 'C4', 'E4'],
@@ -167,7 +167,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 4, fret: 2, finger: 3 },
     ],
     level: 1,
-    color: "#66cccc"
+    color: "#ab369e"
   },
   Em: {
     pianoNotes: ['E3', 'G3', 'B3'],
@@ -176,7 +176,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 5, fret: 2, finger: 3 },
     ],
     level: 1,
-    color: "#ff66ff"
+    color: "#624890"
   },
   Dm: {
     pianoNotes: ['D4', 'F4', 'A4'],
@@ -186,7 +186,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 3, fret: 2, finger: 2 },
     ],
     level: 1,
-    color: "#33ff99"
+    color: "#d4293f"
   },
   Bm: {
     pianoNotes: ['B3', 'D4', 'F#4'],
@@ -198,7 +198,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 2, finger: 1 },
     ],
     level: 1,
-    color: "#ff99ff"
+    color: "#3777cf"
   },
   'F#m': {
     pianoNotes: ['F#3', 'A3', 'C#4'],
@@ -260,7 +260,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 1, finger: 1 },
     ],
     level: 1,
-    color: "#ff99cc"
+    color: "#69a50b"
   },
   Fm: {
     pianoNotes: ['F3', 'Ab3', 'C4'],
@@ -273,7 +273,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 1, finger: 1 },
     ],
     level: 1,
-    color: "#66ffcc"
+    color: "#d2b207"
   },
   Cm: {
     pianoNotes: ['C4', 'Eb4', 'G4'],
@@ -285,7 +285,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 3, finger: 1 },
     ],
     level: 1,
-    color: "#ff66cc"
+    color: "#d45a16"
   },
   Gm: {
     pianoNotes: ['G3', 'Bb3', 'D4'],
@@ -298,7 +298,7 @@ export const chords: Record<string, ChordDefinition> = {
       { string: 1, fret: 3, finger: 1 },
     ],
     level: 1,
-    color: "#33cccc"
+    color: "#d4442a"
   },
 
   // Major 7th Chords
