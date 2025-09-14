@@ -1,7 +1,7 @@
 import { useState, useEffect, type FC, useCallback } from 'react';
 import songs, { type Song } from '../../data/songs';
 import useMetronome from '../../hooks/useMetronome';
-import useAudio from '../../hooks/useAudio';
+import { useAudioContext } from '../../contexts/AudioProvider';
 import PracticeMetronomeControls from './PracticeMetronomeControls';
 import { InstrumentPanel } from './InstrumentPanel';
 import { chordList as chords, type Chord } from '../../data/chords';
@@ -24,7 +24,7 @@ const SongPractice: FC<SongPracticeProps> = ({ onClose }) => {
         useState<'guitar' | 'piano'>('guitar');
     const [message, setMessage] = useState<string | null>(null);
     const [{ isPlaying, bpm }, { start, stop, setBpm }] = useMetronome(60, 4);
-    const { playChord, fretToNote } = useAudio();
+    const { playChord, fretToNote } = useAudioContext();
 
     const chordName: string | null =
         selectedSong?.progression[currentChordIndex] ?? null;

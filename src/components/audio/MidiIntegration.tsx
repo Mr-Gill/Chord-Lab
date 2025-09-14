@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useMidi } from '../../hooks/useMidi';
+import DeviceList from './DeviceList';
+import RecordingControls from './RecordingControls';
+import PlaybackTester from './PlaybackTester';
 
 const MidiIntegration: React.FC = () => {
   const {
@@ -18,17 +21,13 @@ const MidiIntegration: React.FC = () => {
     initializeMidi,
   } = useMidi();
 
-  const [selectedDevice, setSelectedDevice] = useState<string>('');
-
   if (!isSupported) {
     return (
       <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
         <div className="flex items-center">
           <div className="text-yellow-600 dark:text-yellow-400 mr-3">⚠️</div>
           <div>
-            <h4 className="font-medium text-yellow-800 dark:text-yellow-200">
-              MIDI Not Supported
-            </h4>
+            <h4 className="font-medium text-yellow-800 dark:text-yellow-200">MIDI Not Supported</h4>
             <p className="text-sm text-yellow-700 dark:text-yellow-300">
               Your browser doesn't support WebMIDI. Try using Chrome, Edge, or Opera for MIDI functionality.
             </p>
@@ -58,15 +57,11 @@ const MidiIntegration: React.FC = () => {
     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center">
-            🎹 MIDI Integration
-          </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Connect and use MIDI devices for enhanced music learning
-          </p>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center">🎹 MIDI Integration</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Connect and use MIDI devices for enhanced music learning</p>
         </div>
         <div className={`px-3 py-1 rounded-full text-sm ${
-          isConnected 
+          isConnected
             ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
             : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
         }`}>
@@ -87,157 +82,29 @@ const MidiIntegration: React.FC = () => {
 
       {isConnected && (
         <>
-          {/* Device List */}
-          <div className="mb-6">
-            <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">
-              Connected Devices ({connectedDevices.length})
-            </h4>
-            {connectedDevices.length === 0 ? (
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
-                No MIDI devices connected. Connect a MIDI keyboard or controller to get started.
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {connectedDevices.map(device => (
-                  <div
-                    key={device.id}
-                    className="p-3 border border-gray-200 dark:border-gray-600 rounded-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-medium text-gray-900 dark:text-gray-100">
-                          {device.name}
-                        </div>
-                        <div className="text-sm text-gray-500 dark:text-gray-400">
-                          {device.manufacturer} • {device.type}
-                        </div>
-                      </div>
-                      <div className="text-2xl">
-                        {device.type === 'input' ? '⬇️' : '⬆️'}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <DeviceList
+            connectedDevices={connectedDevices}
+            inputDevices={inputDevices}
+            lastNote={lastNote}
+            noteNumberToName={noteNumberToName}
+          />
 
-          {/* Live MIDI Input */}
           {inputDevices.length > 0 && (
-            <div className="mb-6">
-              <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">
-                Live MIDI Input
-              </h4>
-              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                {lastNote ? (
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-lg font-mono text-gray-900 dark:text-gray-100">
-                        {noteNumberToName(lastNote.note)}
-                      </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Velocity: {lastNote.velocity} • Channel: {lastNote.channel + 1}
-                      </div>
-                    </div>
-                    <div className="text-2xl">🎵</div>
-                  </div>
-                ) : (
-                  <div className="text-center text-gray-500 dark:text-gray-400">
-                    Play a note on your MIDI device to see it here
-                  </div>
-                )}
-              </div>
-            </div>
+            <RecordingControls
+              recording={recording}
+              recordedNotes={recordedNotes}
+              startRecording={startRecording}
+              stopRecording={stopRecording}
+              clearRecording={clearRecording}
+              handleExportRecording={handleExportRecording}
+              noteNumberToName={noteNumberToName}
+            />
           )}
 
-          {/* Recording Controls */}
-          {inputDevices.length > 0 && (
-            <div className="mb-6">
-              <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">
-                Practice Recording
-              </h4>
-              <div className="flex items-center space-x-3 mb-3">
-                {!recording ? (
-                  <button
-                    onClick={startRecording}
-                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2"
-                  >
-                    <span>🔴</span>
-                    <span>Start Recording</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={stopRecording}
-                    className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors flex items-center space-x-2"
-                  >
-                    <span>⏹️</span>
-                    <span>Stop Recording</span>
-                  </button>
-                )}
-                
-                <button
-                  onClick={clearRecording}
-                  disabled={recordedNotes.length === 0}
-                  className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                >
-                  Clear
-                </button>
-                
-                <button
-                  onClick={handleExportRecording}
-                  disabled={recordedNotes.length === 0}
-                  className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                >
-                  Export
-                </button>
-              </div>
+          <PlaybackTester playNote={playNote} noteNumberToName={noteNumberToName} />
 
-              {recording && (
-                <div className="flex items-center space-x-2 text-red-600 dark:text-red-400">
-                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm">Recording... ({recordedNotes.length} notes)</span>
-                </div>
-              )}
-
-              {recordedNotes.length > 0 && !recording && (
-                <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                  <div className="text-sm text-blue-800 dark:text-blue-200">
-                    <strong>Recording Complete:</strong> {recordedNotes.length} notes captured
-                  </div>
-                  <div className="text-xs text-blue-600 dark:text-blue-300 mt-1">
-                    Latest notes: {recordedNotes.slice(-5).map(note => noteNumberToName(note.note)).join(', ')}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Test Playback */}
-          <div className="mb-6">
-            <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">
-              Test Playback
-            </h4>
-            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
-              {[60, 62, 64, 65, 67, 69, 71, 72].map(note => (
-                <button
-                  key={note}
-                  onClick={() => playNote(note)}
-                  className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-sm"
-                >
-                  {noteNumberToName(note)}
-                </button>
-              ))}
-            </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              Click notes to test MIDI output (requires connected MIDI device with speakers/headphones)
-            </p>
-          </div>
-
-          {/* Integration Features */}
           <div className="border-t border-gray-200 dark:border-gray-600 pt-6">
-            <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">
-              MIDI Features
-            </h4>
+            <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-3">MIDI Features</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
@@ -248,7 +115,7 @@ const MidiIntegration: React.FC = () => {
                   See notes as you play them on your MIDI keyboard
                 </p>
               </div>
-              
+
               <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
                   <span>✅</span>
@@ -258,7 +125,7 @@ const MidiIntegration: React.FC = () => {
                   Record your practice sessions for review and analysis
                 </p>
               </div>
-              
+
               <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
                   <span>🚧</span>
@@ -268,7 +135,7 @@ const MidiIntegration: React.FC = () => {
                   Automatic chord detection coming soon
                 </p>
               </div>
-              
+
               <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
                 <div className="flex items-center space-x-2 mb-2">
                   <span>🚧</span>
