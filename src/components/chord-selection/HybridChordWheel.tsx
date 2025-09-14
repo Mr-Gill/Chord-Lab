@@ -293,7 +293,7 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
         fontWeight: 'bold',
         color: 'white',
         textShadow: '0 1px 2px rgba(0,0,0,0.8)',
-        pointerEvents: isDragging ? 'auto' : 'auto', // Always allow events for hover detection
+        pointerEvents: 'auto', // Always allow events for hover detection
       }}
       onMouseEnter={() => {
         onPreview(chord);
