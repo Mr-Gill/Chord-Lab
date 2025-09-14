@@ -4,6 +4,11 @@ import { vi } from 'vitest';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import ChordWheel from './ChordWheel';
+const playChord = vi.fn();
+
+vi.mock('../../contexts/AudioProvider', () => ({
+  useAudioContext: () => ({ playChord }),
+}));
 
 const mockChords = ['C', 'G', 'D', 'A'];
 const mockOnSelect = vi.fn();

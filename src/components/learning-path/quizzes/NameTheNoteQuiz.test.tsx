@@ -5,9 +5,8 @@ import { vi, test, expect } from 'vitest';
 const initAudioMock = vi.fn();
 const playNoteMock = vi.fn();
 
-vi.mock('../../../hooks/useAudio', () => ({
-  __esModule: true,
-  default: () => ({
+vi.mock('../../../contexts/AudioProvider', () => ({
+  useAudioContext: () => ({
     initAudio: initAudioMock,
     playNote: playNoteMock,
   }),

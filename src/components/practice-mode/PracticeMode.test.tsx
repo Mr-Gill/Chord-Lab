@@ -86,8 +86,8 @@ vi.mock('../learning-path/LearningPathway', () => ({
   useHighestUnlockedLevel: vi.fn().mockReturnValue(10),
 }));
 
-vi.mock('../../hooks/useAudio', () => ({
-  default: vi.fn().mockReturnValue({
+vi.mock('../../contexts/AudioProvider', () => ({
+  useAudioContext: vi.fn().mockReturnValue({
     playChord: vi.fn(),
     fretToNote: vi.fn().mockReturnValue('A'),
     guitarLoaded: true,

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { useDrag } from 'react-dnd';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { useAudio } from '../../contexts/AudioContext';
+import { useAudioContext } from '../../contexts/AudioProvider';
 import './ChordWheel.css';
 
 interface ChordWheelProps {
@@ -18,7 +18,7 @@ interface ChordItemProps {
 }
 
 const ChordItem: React.FC<ChordItemProps> = ({ chord, index, total, onChordSelect }) => {
-  const { playChord } = useAudio();
+  const { playChord } = useAudioContext();
   const ref = useRef<HTMLDivElement>(null);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'CHORD',
@@ -32,7 +32,7 @@ const ChordItem: React.FC<ChordItemProps> = ({ chord, index, total, onChordSelec
 
   const handleClick = () => {
     onChordSelect?.(chord);
-    playChord(chord);
+    playChord([chord]);
   };
 
   // Calculate position around the circle

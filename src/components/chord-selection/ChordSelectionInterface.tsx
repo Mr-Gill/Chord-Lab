@@ -4,7 +4,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useNavigate } from 'react-router-dom'
 import { HybridChordWheel } from './HybridChordWheel'
 import { ChordDropZone } from './ChordDropZone'
-import useAudio from '../../hooks/useAudio'
+import { useAudioContext } from '../../contexts/AudioProvider'
 
 interface ChordSelectionInterfaceProps {
   onChordsSelected?: (chords: string[]) => void
@@ -16,7 +16,7 @@ export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = (
   const [selectedChords, setSelectedChords] = useState<string[]>([])
   const [hoveredChord, setHoveredChord] = useState<string | null>(null)
   const navigate = useNavigate()
-  const { initAudio, playChord } = useAudio()
+  const { initAudio, playChord } = useAudioContext()
 
   const handleChordDrop = useCallback((chord: string, index: number) => {
     const newChords = [...selectedChords]

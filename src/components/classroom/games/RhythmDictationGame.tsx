@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import useMetronome from '../../../hooks/useMetronome'
-import useAudio from '../../../hooks/useAudio'
+import { useAudioContext } from '../../../contexts/AudioProvider'
 
 interface RhythmPattern {
   id: number
@@ -16,7 +16,7 @@ const PATTERNS: RhythmPattern[] = [
 ]
 
 const RhythmDictationGame: React.FC = () => {
-  const { playNote, initAudio } = useAudio()
+  const { playNote, initAudio } = useAudioContext()
   const [{ bpm }, { start: startMetronome, stop: stopMetronome }] = useMetronome(80, 4)
 
   const [currentPattern, setCurrentPattern] = useState<RhythmPattern | null>(null)
