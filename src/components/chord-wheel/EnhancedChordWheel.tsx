@@ -139,7 +139,6 @@ const EnhancedChordWheel: React.FC<EnhancedChordWheelProps> = ({
   onKeyChange 
 }) => {
   const size = 400;
-  const center = { x: size / 2, y: size / 2 };
   const radius = 140;
   const step = (Math.PI * 2) / 12;
 
@@ -152,6 +151,7 @@ const EnhancedChordWheel: React.FC<EnhancedChordWheelProps> = ({
   }, [initAudio, onChordSelect]);
 
   const chordPositions = useMemo(() => {
+    const center = { x: size / 2, y: size / 2 };
     return MAJORS_ORDER.map((rootChord, index) => {
       const angle = -Math.PI / 2 + index * step;
       const [x, y] = polar(center.x, center.y, radius, angle);
@@ -181,7 +181,7 @@ const EnhancedChordWheel: React.FC<EnhancedChordWheelProps> = ({
         }
       };
     });
-  }, [selectedKey, center, radius, step]);
+  }, [selectedKey, radius, step]);
 
   return (
     <div className="w-full bg-white rounded-xl shadow-lg p-6">

@@ -104,7 +104,7 @@ const LiveStudentMonitor: React.FC = () => {
                     <div>
                       <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Current Chord</p>
                       <p className="text-lg text-gray-900 dark:text-gray-100">
-                        {student.currentChord || 'None'}
+                        {student.currentChord ?? 'None'}
                       </p>
                     </div>
                   </div>
