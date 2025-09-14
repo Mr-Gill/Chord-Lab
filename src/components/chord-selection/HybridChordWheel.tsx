@@ -268,6 +268,7 @@ const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
   return (
     <div
       ref={ref}
+      data-chord={chord}
       style={{
         position: 'absolute',
         left: x - size / 2,
