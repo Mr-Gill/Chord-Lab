@@ -7,6 +7,7 @@ import usePracticeStatistics from '../../hooks/usePracticeStatistics';
 import ChordDisplay from './ChordDisplay';
 import { chordList as chords, type Chord } from '../../data/chords';
 import Statistics from './Statistics';
+import ChordWheel from '../chord-wheel/ChordWheel';
 
 // Simple interface focused on the essentials
 interface ChordOption {
@@ -45,6 +46,7 @@ const SimplePracticeMode: FC<SimplePracticeModeProps> = ({
   const [selectedInstrument, setSelectedInstrument] = useState<'guitar' | 'piano'>('guitar');
   const [chordLevel, setChordLevel] = useState<'beginner' | 'intermediate'>('beginner');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [useChordWheel, setUseChordWheel] = useState(false);
 
   const availableChords = (chordLevel === 'beginner' ? BEGINNER_CHORDS : INTERMEDIATE_CHORDS)
     .map(name => chords.find(c => c.name === name))
@@ -93,6 +95,10 @@ const SimplePracticeMode: FC<SimplePracticeModeProps> = ({
   const selectChord = (chordName: string) => {
     const chord = availableChords.find(c => c.name === chordName);
     if (chord) setCurrentChord(chord);
+  };
+
+  const handleChordWheelSelect = (chordName: string) => {
+    selectChord(chordName);
   };
 
   if (!currentChord) {
