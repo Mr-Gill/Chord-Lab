@@ -2,7 +2,7 @@
 
 An interactive music learning application that teaches piano and guitar chords through progressive lessons, visual guides, and audio feedback. Built for students, teachers, and self-learners who want to master chord playing with proper technique.
 
-**[Launch App](https://squidgyg.github.io/Chord-Lab/)** |
+**[Launch App](https://Mr-Gill.github.io/Chord-Lab/)** |
 
 ![GitHub Pages](https://img.shields.io/github/deployments/SquidgyG/Chord-Lab/github-pages?label=deployment)
 ![License](https://img.shields.io/github/license/SquidgyG/Chord-Lab)
