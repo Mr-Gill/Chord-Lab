@@ -35,14 +35,16 @@ export function getRomanNumeral(chord: string, key: string): string | null {
   // Create inverse mapping from chord name to roman numeral
   const chordToRoman: Record<string, string> = {};
   Object.entries(keyDegrees).forEach(([roman, chordName]) => {
-    chordToRoman[chordName] = roman;
+    if (typeof chordName === 'string') {
+      chordToRoman[chordName] = roman;
+    }
   });
   
   return chordToRoman[chord] || null;
 }
 
 // Function to get diatonic chords with roman numerals for a key
-export function getDiatonicChordsWithRomans(key: string): Array<{ chord: string, roman: string }> {
+export function getDiatonicChordsWithRomans(key: string): { chord: string; roman: string }[] {
   const keyDegrees = KEY_DEGREES[key];
   if (!keyDegrees) return [];
   
@@ -56,7 +58,9 @@ export function isDiatonicChord(chord: string, key: string): boolean {
   const keyDegrees = KEY_DEGREES[key];
   if (!keyDegrees) return false;
   
-  return Object.values(keyDegrees).includes(chord);
+  return Object.values(keyDegrees).some(diatonicChord => 
+    typeof diatonicChord === 'string' && diatonicChord === chord
+  );
 }
 
 // Get chord function (tonic, predominant, dominant)
