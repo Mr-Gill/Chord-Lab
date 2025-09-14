@@ -86,40 +86,12 @@ const ChordSegment: React.FC<ChordSegmentProps> = ({
   onHoverEnd,
   onChordClick
 }) => {
-  const svgRef = useRef<SVGGElement>(null)
-  const dragRef = useRef<HTMLDivElement>(null)
   const [isClicked, setIsClicked] = useState(false)
-  const [isDragMode, setIsDragMode] = useState(false)
-
-  const [{ isDragging }, drag] = useDrag(
-    () => ({
-      type: 'chord',
-      item: { chord },
-      collect: (monitor) => ({
-        isDragging: !!monitor.isDragging(),
-      }),
-    }),
-    [chord]
-  )
-
-  // Connect drag to invisible overlay
-  React.useEffect(() => {
-    if (dragRef.current) {
-      drag(dragRef.current)
-    }
-  }, [drag])
 
   const handleClick = () => {
-    if (!isDragMode) {
-      onChordClick(chord)
-      setIsClicked(true)
-      setTimeout(() => setIsClicked(false), 300)
-    }
-  }
-
-  const handleMouseDown = () => {
-    setIsDragMode(true)
-    setTimeout(() => setIsDragMode(false), 500) // Reset after potential drag
+    onChordClick(chord)
+    setIsClicked(true)
+    setTimeout(() => setIsClicked(false), 300)
   }
 
   // Calculate segment path and text position
@@ -158,100 +130,147 @@ const ChordSegment: React.FC<ChordSegmentProps> = ({
   const textX = centerX + textRadius * Math.cos(textAngle)
   const textY = centerY + textRadius * Math.sin(textAngle)
 
-  // Calculate position for drag overlay
-  const avgRadius = (outerRadius + innerRadius) / 2
-  const radians = (angle - 90) * (Math.PI / 180)
-  const overlayX = centerX + avgRadius * Math.cos(radians)
-  const overlayY = centerY + avgRadius * Math.sin(radians)
-  const overlaySize = ring === 'major' ? 50 : 40
-
   // Dynamic styling based on state
-  const opacity = isDragging ? 0.6 : isSelected ? 1 : isHovered ? 0.9 : 0.8
+  const opacity = isSelected ? 1 : isHovered ? 0.9 : 0.8
   const strokeWidth = isSelected ? 3 : isHovered || isClicked ? 2 : 1
   const strokeColor = isClicked ? '#fbbf24' : isSelected ? '#ffffff' : isHovered ? '#e5e7eb' : 'rgba(255,255,255,0.3)'
   const fontSize = ring === 'major' ? '14' : '12'
   const fontWeight = isSelected || isHovered ? 'bold' : '600'
 
   return (
-    <>
-      {/* Visual SVG segment */}
-      <g
-        ref={svgRef}
+    <g
+      style={{
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+      }}
+      onMouseEnter={() => onPreview(chord)}
+      onMouseLeave={onHoverEnd}
+      onClick={handleClick}
+    >
+      {/* Main segment */}
+      <path
+        d={path}
+        fill={color}
+        opacity={opacity}
+        stroke={strokeColor}
+        strokeWidth={strokeWidth}
+        className="transition-all duration-200"
         style={{
-          cursor: 'pointer',
-          transition: 'all 0.2s ease',
+          filter: (isHovered || isSelected || isClicked) ? `drop-shadow(0 0 10px ${color}80)` : 'none',
         }}
-        onMouseEnter={() => onPreview(chord)}
-        onMouseLeave={onHoverEnd}
-        onClick={handleClick}
+      />
+      
+      {/* Chord name text */}
+      <text
+        x={textX}
+        y={textY}
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontSize={fontSize}
+        fontWeight={fontWeight}
+        fill="white"
+        className="select-none pointer-events-none"
+        style={{
+          textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+          filter: isClicked ? 'brightness(1.5)' : 'none',
+        }}
       >
-        {/* Main segment */}
+        {chord}
+      </text>
+      
+      {/* Click glow effect */}
+      {isClicked && (
         <path
           d={path}
-          fill={color}
-          opacity={opacity}
-          stroke={strokeColor}
-          strokeWidth={strokeWidth}
-          className="transition-all duration-200"
-          style={{
-            filter: (isHovered || isSelected || isClicked) ? `drop-shadow(0 0 10px ${color}80)` : 'none',
-          }}
+          fill="none"
+          stroke="#fbbf24"
+          strokeWidth="3"
+          opacity="0.8"
+          className="animate-ping"
         />
-        
-        {/* Chord name text */}
-        <text
-          x={textX}
-          y={textY}
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize={fontSize}
-          fontWeight={fontWeight}
-          fill="white"
-          className="select-none pointer-events-none"
-          style={{
-            textShadow: '0 1px 2px rgba(0,0,0,0.8)',
-            filter: isClicked ? 'brightness(1.5)' : 'none',
-          }}
-        >
-          {chord}
-        </text>
-        
-        {/* Click glow effect */}
-        {isClicked && (
-          <path
-            d={path}
-            fill="none"
-            stroke="#fbbf24"
-            strokeWidth="3"
-            opacity="0.8"
-            className="animate-ping"
-          />
-        )}
-      </g>
-      
-      {/* Drag overlay - only visible during hover/drag */}
-      <div
-        ref={dragRef}
-        style={{
-          position: 'absolute',
-          left: overlayX - overlaySize / 2,
-          top: overlayY - overlaySize / 2,
-          width: overlaySize,
-          height: overlaySize,
-          cursor: 'grab',
-          opacity: isHovered || isDragging ? 0.2 : 0,
-          backgroundColor: isDragging ? color : 'transparent',
-          borderRadius: '50%',
-          border: isHovered ? '2px dashed rgba(255,255,255,0.5)' : 'none',
-          zIndex: 3,
-          pointerEvents: 'auto',
-          transition: 'all 0.2s ease',
-        }}
-        onMouseDown={handleMouseDown}
-        onMouseEnter={() => onPreview(chord)}
-        onMouseLeave={onHoverEnd}
-      />
-    </>
+      )}
+    </g>
+  )
+}
+
+// Separate draggable button positioned over the segments
+interface DraggableChordButtonProps {
+  chord: string
+  angle: number
+  ring: 'major' | 'minor'
+  color: string
+  isSelected: boolean
+  isHovered: boolean
+  onPreview: (chord: string) => void
+  onHoverEnd: () => void
+}
+
+const DraggableChordButton: React.FC<DraggableChordButtonProps> = ({
+  chord,
+  angle,
+  ring,
+  color,
+  isSelected,
+  isHovered,
+  onPreview,
+  onHoverEnd
+}) => {
+  const ref = useRef<HTMLDivElement>(null)
+
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: 'chord',
+      item: { chord },
+      collect: (monitor) => ({
+        isDragging: !!monitor.isDragging(),
+      }),
+    }),
+    [chord]
+  )
+
+  drag(ref)
+
+  // Calculate position based on angle and ring to match segment
+  const centerX = 250
+  const centerY = 250
+  const outerRadius = ring === 'major' ? 200 : 140
+  const innerRadius = ring === 'major' ? 140 : 80
+  const radius = (outerRadius + innerRadius) / 2
+  const radians = (angle - 90) * (Math.PI / 180)
+  const x = centerX + radius * Math.cos(radians)
+  const y = centerY + radius * Math.sin(radians)
+
+  const size = ring === 'major' ? 50 : 40
+  
+  return (
+    <div
+      ref={ref}
+      style={{
+        position: 'absolute',
+        left: x - size / 2,
+        top: y - size / 2,
+        width: size,
+        height: size,
+        cursor: isDragging ? 'grabbing' : 'grab',
+        opacity: isDragging ? 0.8 : 0, // Invisible unless dragging
+        backgroundColor: isDragging ? color : 'transparent',
+        borderRadius: '50%',
+        border: isDragging ? '2px solid white' : 'none',
+        zIndex: 10,
+        transition: 'all 0.2s ease',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: ring === 'major' ? '12px' : '10px',
+        fontWeight: 'bold',
+        color: 'white',
+        textShadow: '0 1px 2px rgba(0,0,0,0.8)',
+      }}
+      onMouseEnter={() => onPreview(chord)}
+      onMouseLeave={onHoverEnd}
+    >
+      {isDragging && chord}
+    </div>
   )
 }
 
@@ -306,6 +325,22 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
           stroke="rgba(255,255,255,0.2)"
           strokeWidth="1"
         />
+        
+        {/* Chord segments - visual only */}
+        {CHORD_WHEEL_DATA.map(({ chord, angle, ring, color }) => (
+          <ChordSegment
+            key={chord}
+            chord={chord}
+            angle={angle}
+            ring={ring}
+            color={color}
+            isSelected={selectedChords.includes(chord)}
+            isHovered={hoveredChord === chord}
+            onPreview={onPreview}
+            onHoverEnd={onHoverEnd}
+            onChordClick={onChordClick}
+          />
+        ))}
         
         {/* Center circle with instructions */}
         <circle
@@ -372,10 +407,10 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
         </text>
       </svg>
       
-      {/* Chord segments with integrated drag functionality */}
+      {/* Invisible draggable buttons for drag-and-drop functionality */}
       {CHORD_WHEEL_DATA.map(({ chord, angle, ring, color }) => (
-        <ChordSegment
-          key={chord}
+        <DraggableChordButton
+          key={`drag-${chord}`}
           chord={chord}
           angle={angle}
           ring={ring}
@@ -384,7 +419,6 @@ export const HybridChordWheel: React.FC<HybridChordWheelProps> = ({
           isHovered={hoveredChord === chord}
           onPreview={onPreview}
           onHoverEnd={onHoverEnd}
-          onChordClick={onChordClick}
         />
       ))}
     </div>
