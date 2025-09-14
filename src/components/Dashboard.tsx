@@ -32,7 +32,16 @@ const Dashboard = () => {
             </p>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Link
+              to="/choose-chords"
+              className="group relative overflow-hidden flex flex-col items-center justify-center p-8 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-700 text-white hover:from-blue-600 hover:via-indigo-700 hover:to-purple-800 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+              <span className="text-5xl mb-3 transform group-hover:scale-110 transition-transform duration-300">🎡</span>
+              <span className="text-xl font-bold relative z-10">Choose Chords</span>
+              <span className="text-sm opacity-90 mt-1 relative z-10">Build your progression</span>
+            </Link>
             <Link
               to="/practice"
               className="group relative overflow-hidden flex flex-col items-center justify-center p-8 rounded-2xl bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 text-white hover:from-purple-600 hover:via-purple-700 hover:to-purple-800 transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"

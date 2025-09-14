@@ -20,6 +20,7 @@ const PracticeMode = lazy(() => import('./components/practice-mode/PracticeMode'
 const Metronome = lazy(() => import('./components/practice-mode/Metronome'))
 const LearningPathway = lazy(() => import('./components/learning-path/LearningPathway'))
 const ChordWheel = lazy(() => import('./components/ChordWheel'))
+const ChordSelectionInterface = lazy(() => import('./components/chord-selection/ChordSelectionInterface'))
 const ScrollingPractice = lazy(() => import('./components/practice-mode/ScrollingPractice'))
 const ClassroomMode = lazy(() => import('./components/classroom/ClassroomMode'))
 const TeacherDashboard = lazy(() => import('./components/classroom/TeacherDashboard'))
@@ -56,6 +57,9 @@ function App() {
     <>
       <NavLink to="/" end className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
         Home
+      </NavLink>
+      <NavLink to="/choose-chords" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
+        Choose Chords
       </NavLink>
       <NavLink to="/practice" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
         Practice
@@ -238,6 +242,7 @@ function App() {
               <ChordBuilderProvider>
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
+                  <Route path="/choose-chords" element={<ChordSelectionInterface />} />
                   <Route path="/create" element={<ChordProgressionBuilder />} />
                   <Route path="/practice" element={<PracticeMode />} />
                   <Route path="/practice/scrolling" element={<ScrollingPractice />} />
