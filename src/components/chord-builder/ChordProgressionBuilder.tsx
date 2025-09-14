@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import useAudio from '../../hooks/useAudio';
+import { useAudioContext } from '../../contexts/AudioProvider';
 import { chords as chordData } from '../../data/chords';
 import { useChordBuilder } from '../../contexts/ChordBuilderContext';
 import { EnhancedChordWheel, ProgressionDropZone } from '../chord-wheel/EnhancedChordWheel';
@@ -18,7 +18,7 @@ const ChordProgressionBuilder = () => {
   const [progression, setProgression] = useState<ProgressionChord[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const { initAudio, playChord } = useAudio();
+  const { initAudio, playChord } = useAudioContext();
 
   useEffect(() => {
     initAudio();

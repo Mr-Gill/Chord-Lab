@@ -6,15 +6,18 @@ import { HashRouter } from 'react-router-dom'
 import { ClassroomModeProvider } from './contexts/ClassroomModeContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { UserProfileProvider } from './contexts/UserProfileContext'
+import { AudioProvider } from './contexts/AudioProvider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <UserProfileProvider>
         <ClassroomModeProvider>
-          <HashRouter>
-            <App />
-          </HashRouter>
+          <AudioProvider>
+            <HashRouter>
+              <App />
+            </HashRouter>
+          </AudioProvider>
         </ClassroomModeProvider>
       </UserProfileProvider>
     </ThemeProvider>

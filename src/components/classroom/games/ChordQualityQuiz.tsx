@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { chordQualities } from '../../../data/chordQualities'
-import useAudio from '../../../hooks/useAudio'
+import { useAudioContext } from '../../../contexts/AudioProvider'
 
 interface Score {
   teamA: number
@@ -11,7 +11,7 @@ const getRandomChord = () =>
   chordQualities[Math.floor(Math.random() * chordQualities.length)]
 
 const ChordQualityQuiz: React.FC = () => {
-  const { playChord } = useAudio()
+  const { playChord } = useAudioContext()
   const [currentChord, setCurrentChord] = useState(getRandomChord)
   const [feedback, setFeedback] = useState<string | null>(null)
   const [answered, setAnswered] = useState(false)

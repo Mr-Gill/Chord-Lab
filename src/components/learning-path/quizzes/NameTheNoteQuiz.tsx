@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import useAudio from '../../../hooks/useAudio';
+import { useAudioContext } from '../../../contexts/AudioProvider';
 
 interface QuizQuestion {
   id: number;
@@ -10,7 +10,7 @@ interface QuizQuestion {
 }
 
 const NameTheNoteQuiz: React.FC = () => {
-  const { initAudio, playNote } = useAudio();
+  const { initAudio, playNote } = useAudioContext();
 
   useEffect(() => {
     initAudio();
