@@ -24,7 +24,7 @@ export const useMidi = () => {
   const [recording, setRecording] = useState(false);
   const [recordedNotes, setRecordedNotes] = useState<MidiNote[]>([]);
 
-  // Check MIDI support
+  // Check MIDI support and initialize
   useEffect(() => {
     if (navigator.requestMIDIAccess) {
       setIsSupported(true);
@@ -40,19 +40,55 @@ export const useMidi = () => {
       setMidiAccess(access);
       setIsConnected(true);
       updateDeviceList(access);
-
-      // Listen for device connection changes
-      access.onstatechange = () => {
-        updateDeviceList(access);
-      };
-
-      // Setup input listeners
-      setupInputListeners(access);
     } catch (error) {
       console.error('Failed to initialize MIDI:', error);
       setIsConnected(false);
     }
   };
+
+  const handleMidiMessage = useCallback((event: WebMidi.MIDIMessageEvent) => {
+    const [status, note, velocity] = event.data;
+    const channel = status & 0x0f;
+    const messageType = status & 0xf0;
+
+    // Handle note on/off messages
+    if (messageType === 0x90 || messageType === 0x80) { // Note on or note off
+      const isNoteOn = messageType === 0x90 && velocity > 0;
+
+      if (isNoteOn) {
+        const midiNote: MidiNote = {
+          note,
+          velocity,
+          channel,
+          timestamp: event.timeStamp || Date.now(),
+        };
+
+        setLastNote(midiNote);
+
+        if (recording) {
+          setRecordedNotes(prev => [...prev, midiNote]);
+        }
+      }
+    }
+  }, [recording]);
+
+  // Setup listeners when MIDI access or message handler changes
+  useEffect(() => {
+    if (!midiAccess) return;
+
+    const access = midiAccess;
+    const handleStateChange = () => updateDeviceList(access);
+    access.onstatechange = handleStateChange;
+
+    setupInputListeners(access);
+
+    return () => {
+      access.onstatechange = null;
+      access.inputs.forEach((input) => {
+        input.onmidimessage = null;
+      });
+    };
+  }, [midiAccess, handleMidiMessage]);
 
   const updateDeviceList = (access: WebMidi.MIDIAccess) => {
     const newDevices: MidiDevice[] = [];
@@ -87,32 +123,6 @@ export const useMidi = () => {
       input.onmidimessage = handleMidiMessage;
     });
   };
-
-  const handleMidiMessage = useCallback((event: WebMidi.MIDIMessageEvent) => {
-    const [status, note, velocity] = event.data;
-    const channel = status & 0x0f;
-    const messageType = status & 0xf0;
-
-    // Handle note on/off messages
-    if (messageType === 0x90 || messageType === 0x80) { // Note on or note off
-      const isNoteOn = messageType === 0x90 && velocity > 0;
-      
-      if (isNoteOn) {
-        const midiNote: MidiNote = {
-          note,
-          velocity,
-          channel,
-          timestamp: event.timeStamp || Date.now(),
-        };
-        
-        setLastNote(midiNote);
-        
-        if (recording) {
-          setRecordedNotes(prev => [...prev, midiNote]);
-        }
-      }
-    }
-  }, [recording]);
 
   const startRecording = () => {
     setRecording(true);
