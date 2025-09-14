@@ -216,50 +216,69 @@ const PracticeMode: FC = () => {
 
     return (
         <ChordBuilderProvider>
-            <div className="w-full bg-white dark:bg-gray-800/50 rounded-xl shadow-lg p-6">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Practice Mode</h2>
+            <div className="w-full bg-white/80 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-8">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent">
+                        🎵 Practice Mode
+                    </h2>
                     <button
                         onClick={() => setBeginnerMode(!beginnerMode)}
-                        className="px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 dark:text-gray-300"
+                        className={`px-6 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                            beginnerMode 
+                                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg hover:shadow-xl' 
+                                : 'bg-gradient-to-r from-purple-500 to-blue-600 text-white shadow-lg hover:shadow-xl'
+                        }`}
                         data-testid="beginner-mode-toggle"
                     >
-                        {beginnerMode ? 'More Options' : 'Beginner Mode'}
+                        {beginnerMode ? '🚀 More Options' : '🌟 Beginner Mode'}
                     </button>
                 </div>
-                <div className="flex justify-between items-center mb-4">
+                
+                <div className="flex justify-center items-center mb-8 bg-gray-100/50 dark:bg-gray-700/30 rounded-2xl p-2">
                     <button 
                         onClick={() => setActiveTab('practice')}
-                        className={activeTab === 'practice' ? 'active' : ''}
+                        className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                            activeTab === 'practice' 
+                                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transform scale-105' 
+                                : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/50 dark:hover:bg-gray-600/50'
+                        }`}
                     >
-                        Practice
+                        🎸 Practice
                     </button>
                     <button 
                         onClick={() => setActiveTab('chords')}
-                        className={activeTab === 'chords' ? 'active' : ''}
+                        className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                            activeTab === 'chords' 
+                                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transform scale-105' 
+                                : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/50 dark:hover:bg-gray-600/50'
+                        }`}
                     >
-                        Chords
+                        🎼 Chords
                     </button>
                     <button 
                         onClick={() => setActiveTab('wheel')}
-                        className={activeTab === 'wheel' ? 'active' : ''}
+                        className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                            activeTab === 'wheel' 
+                                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transform scale-105' 
+                                : 'text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-white/50 dark:hover:bg-gray-600/50'
+                        }`}
                     >
-                        Chord Wheel
+                        🎡 Chord Wheel
                     </button>
                 </div>
                 {activeTab === 'practice' && (
                     <div>
                         {!beginnerMode && keyCenter && (
-                            <div className="mb-4 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30">
-                                <div className="flex items-center justify-between flex-wrap gap-2">
-                                    <div className="text-gray-800 dark:text-gray-200 font-semibold">
-                                        Key: {keyCenter} major
+                            <div className="mb-6 p-6 rounded-2xl border border-gray-200/70 dark:border-gray-600/50 bg-gradient-to-r from-blue-50/80 to-purple-50/80 dark:from-blue-900/20 dark:to-purple-900/20 backdrop-blur-sm shadow-lg">
+                                <div className="flex items-center justify-between flex-wrap gap-3">
+                                    <div className="text-gray-800 dark:text-gray-200 font-bold text-lg">
+                                        🎹 Key: {keyCenter} major
                                     </div>
-                                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                                        These chords fit well in this key:
+                                    <div className="text-sm text-gray-600 dark:text-gray-400 bg-white/50 dark:bg-gray-700/50 px-3 py-1 rounded-full">
+                                        💡 Perfect chords for this key
                                     </div>
                                 </div>
-                                <div data-testid="diatonic-chords" className="mt-2 flex flex-wrap gap-2">
+                                <div data-testid="diatonic-chords" className="mt-4 flex flex-wrap gap-3">
                                     {diatonicChips.map(
                                         ({
                                             label,
@@ -280,14 +299,14 @@ const PracticeMode: FC = () => {
                                                     if (c) setCurrentChord(toChordOption(c));
                                                 }}
                                                 disabled={!available}
-                                                className={`px-2.5 py-1 rounded-md text-xs font-bold relative ${
+                                                className={`px-4 py-2 rounded-xl text-sm font-bold relative transition-all duration-300 transform hover:scale-110 ${
                                                     available
-                                                        ? 'text-white'
-                                                        : 'text-gray-800 dark:text-gray-300 cursor-not-allowed opacity-80'
+                                                        ? 'text-white shadow-lg hover:shadow-xl'
+                                                        : 'text-gray-800 dark:text-gray-300 cursor-not-allowed opacity-60'
                                                 }`}
                                                 style={{
                                                     background: available ? color.primary : color.background,
-                                                    border: `1px solid ${color.primary}`,
+                                                    border: `2px solid ${color.primary}`,
                                                 }}
                                                 title={
                                                     available
@@ -299,8 +318,8 @@ const PracticeMode: FC = () => {
                                             >
                                                 {label}
                                                 {locked && (
-                                                    <span className="ml-1 text-[10px] bg-gray-600 text-white px-1 rounded">
-                                                        Locked
+                                                    <span className="ml-1 text-[10px] bg-red-500 text-white px-2 py-0.5 rounded-full">
+                                                        🔒
                                                     </span>
                                                 )}
                                             </button>
@@ -311,30 +330,34 @@ const PracticeMode: FC = () => {
                         )}
 
                         {!beginnerMode && (
-                            <div className="mb-6 flex flex-wrap gap-4">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                        Tips
-                                    </label>
-                                    <button
-                                        onClick={() => setShowTips(!showTips)}
-                                        className={`px-4 py-2 rounded-lg ${
-                                            showTips ? 'bg-green-500 text-white' : 'bg-gray-200 dark:bg-gray-700 dark:text-gray-300'
-                                        }`}
-                                    >
-                                        {showTips ? 'On' : 'Off'}
-                                    </button>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                        Song
-                                    </label>
-                                    <button
-                                        onClick={() => setShowSongPractice(true)}
-                                        className="px-4 py-2 rounded-lg bg-indigo-500 text-white"
-                                    >
-                                        Choose Song
-                                    </button>
+                            <div className="mb-8 p-6 bg-gradient-to-r from-gray-50/80 to-blue-50/80 dark:from-gray-700/30 dark:to-gray-800/30 rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-600/50">
+                                <div className="flex flex-wrap gap-6">
+                                    <div className="flex flex-col items-center">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                            💡 Tips
+                                        </label>
+                                        <button
+                                            onClick={() => setShowTips(!showTips)}
+                                            className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 ${
+                                                showTips 
+                                                    ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg hover:shadow-xl' 
+                                                    : 'bg-gray-200 dark:bg-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500'
+                                            }`}
+                                        >
+                                            {showTips ? '✅ On' : '❌ Off'}
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                            🎵 Song Practice
+                                        </label>
+                                        <button
+                                            onClick={() => setShowSongPractice(true)}
+                                            className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                                        >
+                                            🎼 Choose Song
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -380,11 +403,13 @@ const PracticeMode: FC = () => {
                                 )}
 
                                 {showTips && (
-                                    <div className="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 p-4 rounded">
-                                        <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-2">Practice Tip</h4>
-                                        <p className="text-blue-700 dark:text-blue-400">
+                                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-l-4 border-blue-500 p-6 rounded-2xl shadow-lg backdrop-blur-sm border border-blue-200/50 dark:border-blue-700/50">
+                                        <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-3 text-lg flex items-center">
+                                            💡 Practice Tip
+                                        </h4>
+                                        <p className="text-blue-700 dark:text-blue-400 text-base leading-relaxed">
                                             Practice this chord slowly at first, focusing on clean fingering. Make sure each note
-                                            rings clearly without any buzzing.
+                                            rings clearly without any buzzing. 🎯
                                         </p>
                                     </div>
                                 )}
@@ -392,11 +417,11 @@ const PracticeMode: FC = () => {
                         )}
 
                         {!beginnerMode && (
-                            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                                <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-2">
-                                    Other Chords to Practice
+                            <div className="mt-8 pt-6 border-t border-gray-200/70 dark:border-gray-600/50">
+                                <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-4 text-xl flex items-center">
+                                    🎸 Other Chords to Practice
                                 </h4>
-                                <div data-testid="other-chords" className="flex flex-wrap gap-2">
+                                <div data-testid="other-chords" className="flex flex-wrap gap-3">
                                     {availableChords
                                         .filter((chord: Chord) => chord.name !== currentChord?.name)
                                         .map((chord: Chord) => {
@@ -408,16 +433,16 @@ const PracticeMode: FC = () => {
                                                         if (!locked) setCurrentChord(toChordOption(chord));
                                                     }}
                                                     disabled={locked}
-                                                    className={`px-3 py-1 rounded-lg ${
+                                                    className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 ${
                                                         locked
                                                             ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500'
-                                                            : 'bg-gray-100 hover:bg-blue-100 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200'
+                                                            : 'bg-gradient-to-r from-gray-100 to-gray-200 hover:from-blue-100 hover:to-purple-100 text-gray-800 dark:from-gray-700 dark:to-gray-600 dark:hover:from-gray-600 dark:hover:to-gray-500 dark:text-gray-200 shadow-md hover:shadow-lg'
                                                     }`}
                                                 >
                                                     {chord.name}
                                                     {locked && (
-                                                        <span className="ml-1 text-xs bg-gray-500 text-white px-1 rounded">
-                                                            Locked
+                                                        <span className="ml-2 text-xs bg-red-500 text-white px-2 py-0.5 rounded-full">
+                                                            🔒
                                                         </span>
                                                     )}
                                                 </button>
@@ -437,11 +462,11 @@ const PracticeMode: FC = () => {
                     </div>
                 )}
                 {activeTab === 'chords' && (
-                    <div>
-                        <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-2">
-                            Other Chords to Practice
+                    <div className="space-y-6">
+                        <h4 className="font-bold text-gray-800 dark:text-gray-100 mb-6 text-2xl flex items-center">
+                            🎼 Available Chords
                         </h4>
-                        <div data-testid="other-chords" className="flex flex-wrap gap-2">
+                        <div data-testid="other-chords" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                             {availableChords
                                 .filter((chord: Chord) => chord.name !== currentChord?.name)
                                 .map((chord: Chord) => {
@@ -453,17 +478,19 @@ const PracticeMode: FC = () => {
                                                 if (!locked) setCurrentChord(toChordOption(chord));
                                             }}
                                             disabled={locked}
-                                            className={`px-3 py-1 rounded-lg ${
+                                            className={`group px-4 py-6 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 text-center ${
                                                 locked
                                                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-700 dark:text-gray-500'
-                                                    : 'bg-gray-100 hover:bg-blue-100 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200'
+                                                    : 'bg-gradient-to-br from-white to-gray-50 hover:from-blue-50 hover:to-purple-50 text-gray-800 dark:from-gray-700 dark:to-gray-600 dark:hover:from-gray-600 dark:hover:to-gray-500 dark:text-gray-200 shadow-lg hover:shadow-xl border border-gray-200/50 dark:border-gray-600/50'
                                             }`}
                                         >
-                                            {chord.name}
+                                            <div className="text-2xl mb-2 group-hover:scale-110 transition-transform duration-300">
+                                                {chord.name}
+                                            </div>
                                             {locked && (
-                                                <span className="ml-1 text-xs bg-gray-500 text-white px-1 rounded">
-                                                    Locked
-                                                </span>
+                                                <div className="text-xs bg-red-500 text-white px-2 py-1 rounded-full">
+                                                    🔒 Locked
+                                                </div>
                                             )}
                                         </button>
                                     );
