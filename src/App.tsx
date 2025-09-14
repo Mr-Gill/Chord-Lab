@@ -8,6 +8,7 @@ import { AchievementProvider } from './contexts/AchievementContext'
 import { AchievementToast } from './components/achievements/AchievementToast'
 import { ScoreboardProvider } from './components/classroom/Scoreboard'
 import { ChordBuilderProvider } from './contexts/ChordBuilderContext';
+import { CollaborationProvider } from './contexts/CollaborationContext';
 import ErrorBoundary from './components/common/ErrorBoundary';
 import './styles/responsive-diagrams.css'
 import { StudentView } from './components/student/StudentView';
@@ -23,6 +24,7 @@ const ScrollingPractice = lazy(() => import('./components/practice-mode/Scrollin
 const ClassroomMode = lazy(() => import('./components/classroom/ClassroomMode'))
 const TeacherDashboard = lazy(() => import('./components/classroom/TeacherDashboard'))
 const TeacherGamesDashboard = lazy(() => import('./components/classroom/TeacherGamesDashboard'))
+const EnhancedClassroomDashboard = lazy(() => import('./components/classroom/EnhancedClassroomDashboard'))
 const ExampleGame = lazy(() => import('./components/classroom/games/ExampleGame'))
 const HelpResources = lazy(() => import('./components/HelpResources'))
 const ProfilePage = lazy(() => import('./components/profile/ProfilePage').then(module => ({ default: module.ProfilePage })))
@@ -81,6 +83,9 @@ function App() {
       <NavLink to="/metronome" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
         Metronome
       </NavLink>
+      <NavLink to="/classroom/enhanced" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
+        Enhanced Classroom
+      </NavLink>
       <NavLink to="/classroom" className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkIdle}`}>
         Classroom
       </NavLink>
@@ -123,7 +128,8 @@ function App() {
 
   return (
     <AchievementProvider>
-      <ErrorBoundary>
+      <CollaborationProvider>
+        <ErrorBoundary>
         <div
           className={`min-h-screen bg-white dark:bg-gray-900 ${
             classroomMode ? 'text-[110%] contrast-125' : ''
@@ -240,6 +246,7 @@ function App() {
                   <Route path="/help" element={<HelpResources />} />
                   <Route path="/metronome" element={<Metronome />} />
                   <Route path="/classroom" element={<ClassroomMode />} />
+                  <Route path="/classroom/enhanced" element={<EnhancedClassroomDashboard />} />
                   <Route path="/classroom/dashboard" element={<TeacherDashboard />} />
                   <Route
                     path="/classroom/games/*"
@@ -261,6 +268,7 @@ function App() {
           </main>
         </div>
       </ErrorBoundary>
+      </CollaborationProvider>
     </AchievementProvider>
   )
 }
