@@ -1,0 +1,232 @@
+import React, { useState, useCallback } from 'react'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { useNavigate } from 'react-router-dom'
+import { DraggableChordButton } from './DraggableChordButton'
+import { ChordDropZone } from './ChordDropZone'
+import { getChordTheme } from '../../utils/diagramTheme'
+import useAudio from '../../hooks/useAudio'
+
+// Circle of Fifths chord arrangement for intuitive proximity
+const CHORD_WHEEL_LAYOUT = [
+  { chord: 'C', position: { angle: 0, radius: 'outer' } },
+  { chord: 'G', position: { angle: 30, radius: 'outer' } },
+  { chord: 'D', position: { angle: 60, radius: 'outer' } },
+  { chord: 'A', position: { angle: 90, radius: 'outer' } },
+  { chord: 'E', position: { angle: 120, radius: 'outer' } },
+  { chord: 'B', position: { angle: 150, radius: 'outer' } },
+  { chord: 'F#', position: { angle: 180, radius: 'outer' } },
+  { chord: 'Db', position: { angle: 210, radius: 'outer' } },
+  { chord: 'Ab', position: { angle: 240, radius: 'outer' } },
+  { chord: 'Eb', position: { angle: 270, radius: 'outer' } },
+  { chord: 'Bb', position: { angle: 300, radius: 'outer' } },
+  { chord: 'F', position: { angle: 330, radius: 'outer' } },
+  // Relative minors on inner ring
+  { chord: 'Am', position: { angle: 0, radius: 'inner' } },
+  { chord: 'Em', position: { angle: 30, radius: 'inner' } },
+  { chord: 'Bm', position: { angle: 60, radius: 'inner' } },
+  { chord: 'F#m', position: { angle: 90, radius: 'inner' } },
+  { chord: 'C#m', position: { angle: 120, radius: 'inner' } },
+  { chord: 'G#m', position: { angle: 150, radius: 'inner' } },
+  { chord: 'D#m', position: { angle: 180, radius: 'inner' } },
+  { chord: 'Bbm', position: { angle: 210, radius: 'inner' } },
+  { chord: 'Fm', position: { angle: 240, radius: 'inner' } },
+  { chord: 'Cm', position: { angle: 270, radius: 'inner' } },
+  { chord: 'Gm', position: { angle: 300, radius: 'inner' } },
+  { chord: 'Dm', position: { angle: 330, radius: 'inner' } },
+]
+
+interface ChordSelectionInterfaceProps {
+  onChordsSelected?: (chords: string[]) => void
+}
+
+export const ChordSelectionInterface: React.FC<ChordSelectionInterfaceProps> = ({
+  onChordsSelected
+}) => {
+  const [selectedChords, setSelectedChords] = useState<string[]>([])
+  const [hoveredChord, setHoveredChord] = useState<string | null>(null)
+  const navigate = useNavigate()
+  const { initAudio, playChord } = useAudio()
+
+  const handleChordDrop = useCallback((chord: string, index: number) => {
+    const newChords = [...selectedChords]
+    newChords[index] = chord
+    setSelectedChords(newChords)
+    onChordsSelected?.(newChords.filter(c => c))
+
+    // Play chord feedback
+    initAudio()
+    // Simple chord playback using chord root note
+    const notes = [chord.replace('m', '') + '4']
+    playChord(notes, 0.6)
+  }, [selectedChords, onChordsSelected, initAudio, playChord])
+
+  const handleRemoveChord = useCallback((index: number) => {
+    const newChords = [...selectedChords]
+    newChords.splice(index, 1)
+    setSelectedChords(newChords)
+    onChordsSelected?.(newChords)
+  }, [selectedChords, onChordsSelected])
+
+  const handleStartPractice = useCallback(() => {
+    if (selectedChords.length >= 2) {
+      // Navigate to practice mode with selected chords
+      const chordsParam = selectedChords.join(',')
+      navigate(`/practice?chords=${encodeURIComponent(chordsParam)}`)
+    }
+  }, [selectedChords, navigate])
+
+  const handleChordPreview = useCallback((chord: string) => {
+    setHoveredChord(chord)
+    initAudio()
+    // Simple preview - just root note
+    const notes = [chord.replace('m', '') + '4']
+    playChord(notes, 0.4)
+  }, [initAudio, playChord])
+
+  // Helper to calculate polar coordinates
+  const getChordPosition = (angle: number, radius: string) => {
+    const radiusValue = radius === 'outer' ? 180 : 120
+    const radians = (angle - 90) * (Math.PI / 180) // -90 to start at top
+    return {
+      x: 250 + radiusValue * Math.cos(radians), // 250 is center offset
+      y: 250 + radiusValue * Math.sin(radians),
+    }
+  }
+
+  return (
+    <DndProvider backend={HTML5Backend}>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800">
+        {/* Header */}
+        <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg shadow-lg p-6">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 bg-clip-text text-transparent mb-2">
+              Choose Your Chords
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Drag chords from the wheel to build your practice progression. Adjacent chords work well together!
+            </p>
+          </div>
+        </div>
+
+        {/* Main Content - Laptop optimized horizontal layout */}
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 min-h-[700px]">
+            
+            {/* Chord Wheel - Left side */}
+            <div className="lg:col-span-2">
+              <div className="bg-white/80 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-2xl p-8 h-full">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
+                  Chord Wheel
+                </h2>
+                
+                {/* Chord Wheel using positioned HTML elements */}
+                <div className="relative w-full h-[500px] flex items-center justify-center">
+                  {/* Background circles for visual reference */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-[360px] h-[360px] border border-gray-300 dark:border-gray-600 rounded-full opacity-30"></div>
+                  </div>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-[240px] h-[240px] border border-gray-300 dark:border-gray-600 rounded-full opacity-30"></div>
+                  </div>
+                  
+                  {/* Center instructions */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-32 h-32 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded-full flex flex-col items-center justify-center text-center">
+                      <div className="text-xs text-gray-600 dark:text-gray-400 leading-tight">
+                        <div>Drag chords</div>
+                        <div>to build your</div>
+                        <div>progression</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Chord positions */}
+                  {CHORD_WHEEL_LAYOUT.map(({ chord, position }) => {
+                    const { x, y } = getChordPosition(position.angle, position.radius)
+                    const theme = getChordTheme(chord)
+                    const isHovered = hoveredChord === chord
+                    const isSelected = selectedChords.includes(chord)
+                    
+                    return (
+                      <DraggableChordButton
+                        key={chord}
+                        chord={chord}
+                        x={x}
+                        y={y}
+                        color={theme.primary}
+                        isHovered={isHovered}
+                        isSelected={isSelected}
+                        onPreview={handleChordPreview}
+                        onHoverEnd={() => setHoveredChord(null)}
+                      />
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Chord Selection Area - Right side */}
+            <div className="lg:col-span-1">
+              <div className="bg-white/80 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-2xl p-8 h-full">
+                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6">
+                  Your Progression
+                </h2>
+                
+                {/* Drop zones for chord progression */}
+                <div className="space-y-4 mb-8">
+                  {[0, 1, 2, 3].map((index) => (
+                    <ChordDropZone
+                      key={index}
+                      index={index}
+                      chord={selectedChords[index]}
+                      onDrop={handleChordDrop}
+                      onRemove={handleRemoveChord}
+                      isRequired={index < 2}
+                    />
+                  ))}
+                </div>
+
+                {/* Practice button */}
+                <div className="space-y-4">
+                  <button
+                    onClick={handleStartPractice}
+                    disabled={selectedChords.length < 2}
+                    className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 ${
+                      selectedChords.length >= 2
+                        ? 'bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 transform hover:scale-105 shadow-lg hover:shadow-xl'
+                        : 'bg-gray-400 cursor-not-allowed opacity-50'
+                    }`}
+                  >
+                    Start Practice
+                    {selectedChords.length > 0 && (
+                      <span className="block text-sm opacity-90">
+                        {selectedChords.filter(c => c).length} chord{selectedChords.filter(c => c).length !== 1 ? 's' : ''} selected
+                      </span>
+                    )}
+                  </button>
+                  
+                  {selectedChords.length < 2 && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                      Select at least 2 chords to start practicing
+                    </p>
+                  )}
+                  
+                  {selectedChords.length >= 2 && (
+                    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl">
+                      <p className="text-sm text-blue-700 dark:text-blue-300 text-center">
+                        💡 <strong>Tip:</strong> Adjacent chords on the wheel work great together!
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </DndProvider>
+  )
+}
+
+export default ChordSelectionInterface

@@ -74,6 +74,8 @@ const PracticeMode: FC = () => {
     const [selectedInstrument, setSelectedInstrument] =
         useState<'guitar' | 'piano'>('guitar');
     const [currentChord, setCurrentChord] = useState<ChordOption>(toChordOption(chords[0]));
+    const [selectedChords, setSelectedChords] = useState<ChordOption[]>([]);
+    const [currentChordIndex, setCurrentChordIndex] = useState(0);
     const [showSongPractice, setShowSongPractice] = useState(false);
     const [showAssessmentPractice, setShowAssessmentPractice] = useState(false);
     const { unlockAchievement } = useAchievements();
@@ -113,17 +115,41 @@ const PracticeMode: FC = () => {
         const sp = new URLSearchParams(location.search);
         const keyParam = sp.get('key');
         const chordParam = sp.get('chord');
+        const chordsParam = sp.get('chords'); // New: comma-separated chord list
+        
         if (keyParam && (MAJORS_ORDER as readonly string[]).includes(keyParam)) {
             setKeyCenter(keyParam as MajorKey);
         }
-        if (chordParam) {
+        
+        // Handle multiple chords (from chord selection interface)
+        if (chordsParam) {
+            const chordNames = chordsParam.split(',').filter(name => name.trim());
+            const foundChords = chordNames
+                .map(name => availableChords.find(c => c.name.toLowerCase() === name.trim().toLowerCase()))
+                .filter((chord): chord is Chord => chord !== undefined)
+                .map(toChordOption);
+            
+            if (foundChords.length > 0) {
+                setSelectedChords(foundChords);
+                setCurrentChord(foundChords[0]);
+                setCurrentChordIndex(0);
+            }
+        }
+        // Handle single chord
+        else if (chordParam) {
             const target = availableChords.find(
                 c => c.name.toLowerCase() === chordParam.toLowerCase()
             );
-            if (target) setCurrentChord(toChordOption(target));
+            if (target) {
+                setCurrentChord(toChordOption(target));
+                setSelectedChords([toChordOption(target)]);
+                setCurrentChordIndex(0);
+            }
         }
-        if (!chordParam && availableChords.length > 0 && !currentChord) {
+        
+        if (!chordParam && !chordsParam && availableChords.length > 0 && !currentChord) {
             setCurrentChord(toChordOption(availableChords[0]));
+            setSelectedChords([]);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.search, availableChords]);
@@ -331,6 +357,88 @@ const PracticeMode: FC = () => {
                                             </button>
                                         )
                                     )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Chord Progression Controls */}
+                        {selectedChords.length > 1 && (
+                            <div className="mb-6 p-6 rounded-2xl border border-gray-200/70 dark:border-gray-600/50 bg-gradient-to-r from-purple-50/80 to-pink-50/80 dark:from-purple-900/20 dark:to-pink-900/20 backdrop-blur-sm shadow-lg">
+                                <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+                                    <div className="text-gray-800 dark:text-gray-200 font-bold text-lg">
+                                        🎵 Chord Progression Practice
+                                    </div>
+                                    <div className="text-sm text-gray-600 dark:text-gray-400 bg-white/50 dark:bg-gray-700/50 px-3 py-1 rounded-full">
+                                        {currentChordIndex + 1} of {selectedChords.length}
+                                    </div>
+                                </div>
+                                <div className="flex flex-wrap gap-3 mb-4">
+                                    {selectedChords.map((chord, index) => {
+                                        const theme = getChordTheme(chord.name);
+                                        const isCurrent = index === currentChordIndex;
+                                        return (
+                                            <button
+                                                key={`${chord.name}-${index}`}
+                                                onClick={() => {
+                                                    setCurrentChord(chord);
+                                                    setCurrentChordIndex(index);
+                                                }}
+                                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 transform hover:scale-110 ${
+                                                    isCurrent
+                                                        ? 'text-white shadow-xl ring-2 ring-white'
+                                                        : 'text-white shadow-lg hover:shadow-xl opacity-70 hover:opacity-100'
+                                                }`}
+                                                style={{
+                                                    background: theme.primary,
+                                                    border: `2px solid ${theme.primary}`,
+                                                }}
+                                            >
+                                                {index + 1}. {chord.name}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => {
+                                            const prevIndex = currentChordIndex > 0 ? currentChordIndex - 1 : selectedChords.length - 1;
+                                            setCurrentChord(selectedChords[prevIndex]);
+                                            setCurrentChordIndex(prevIndex);
+                                        }}
+                                        className="px-4 py-2 rounded-xl bg-gray-500 hover:bg-gray-600 text-white font-semibold transition-all duration-300"
+                                    >
+                                        ← Previous
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            const nextIndex = currentChordIndex < selectedChords.length - 1 ? currentChordIndex + 1 : 0;
+                                            setCurrentChord(selectedChords[nextIndex]);
+                                            setCurrentChordIndex(nextIndex);
+                                        }}
+                                        className="px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-all duration-300"
+                                    >
+                                        Next →
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            // Play progression sequence
+                                            selectedChords.forEach((chord, index) => {
+                                                setTimeout(() => {
+                                                    setCurrentChord(chord);
+                                                    setCurrentChordIndex(index);
+                                                    if (selectedInstrument === 'guitar' && chord.positions.length > 0) {
+                                                        const notes = chord.positions.map(pos => fretToNote(pos.string, pos.fret));
+                                                        playChord(notes, 0.8);
+                                                    } else if (selectedInstrument === 'piano' && chord.notes.length > 0) {
+                                                        playChord(chord.notes, 0.8);
+                                                    }
+                                                }, index * 1000);
+                                            });
+                                        }}
+                                        className="px-4 py-2 rounded-xl bg-green-500 hover:bg-green-600 text-white font-semibold transition-all duration-300"
+                                    >
+                                        ▶ Play Progression
+                                    </button>
                                 </div>
                             </div>
                         )}
