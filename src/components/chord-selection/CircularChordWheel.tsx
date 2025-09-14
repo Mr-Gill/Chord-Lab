@@ -1,35 +1,36 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { useDrag } from 'react-dnd'
+import { getPrimaryColor } from '../../utils/diagramTheme'
 
-// Color scheme for different chord families based on Circle of Fifths
+// Chord colors from the standardized color scheme
 const CHORD_COLORS = {
   // Major chords - outer ring
-  'C': '#4FC3F7',   // Light blue
-  'G': '#66BB6A',   // Green  
-  'D': '#FFA726',   // Orange
-  'A': '#EF5350',   // Red
-  'E': '#AB47BC',   // Purple
-  'B': '#5C6BC0',   // Indigo
-  'F#': '#26A69A',  // Teal
-  'Db': '#29B6F6',  // Blue
-  'Ab': '#42A5F5',  // Blue
-  'Eb': '#7E57C2',  // Deep purple
-  'Bb': '#8D6E63',  // Brown
-  'F': '#FF7043',   // Deep orange
+  'C': '#cc39bc',
+  'G': '#714faa',
+  'D': '#3b8bf9',
+  'A': '#02c7f9',
+  'E': '#00e3e2',
+  'B': '#00d48e',
+  'F#': '#37b838',
+  'Db': '#79c505',
+  'Ab': '#fdd500',
+  'Eb': '#ff6813',
+  'Bb': '#ff4b2c',
+  'F': '#ff2a44',
   
-  // Minor chords - inner ring (darker versions)
-  'Am': '#0277BD',  // Dark blue
-  'Em': '#388E3C',  // Dark green
-  'Bm': '#F57C00',  // Dark orange
-  'F#m': '#C62828', // Dark red
-  'C#m': '#7B1FA2', // Dark purple
-  'G#m': '#303F9F', // Dark indigo
-  'D#m': '#00695C', // Dark teal
-  'Bbm': '#1565C0', // Dark blue
-  'Fm': '#1976D2',  // Dark blue
-  'Cm': '#512DA8',  // Dark purple
-  'Gm': '#5D4037',  // Dark brown
-  'Dm': '#D84315',  // Dark orange
+  // Minor chords - inner ring
+  'Am': '#ab369e',
+  'Em': '#624890',
+  'Bm': '#3777cf',
+  'F#m': '#08a6cf',
+  'C#m': '#06bebe',
+  'G#m': '#05b17a',
+  'D#m': '#339c35',
+  'Bbm': '#69a50b',
+  'Fm': '#d2b207',
+  'Cm': '#d45a16',
+  'Gm': '#d4442a',
+  'Dm': '#d4293f',
 }
 
 // Circle of Fifths layout - 12 positions around the circle
