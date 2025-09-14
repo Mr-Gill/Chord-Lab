@@ -14,6 +14,7 @@ import { InstrumentPanel } from './InstrumentPanel';
 import ChordDisplay from './ChordDisplay';
 import { chordList as chords, type Chord } from '../../data/chords';
 import SongPractice from './SongPractice';
+import AssessmentPractice from './AssessmentPractice';
 import { useHighestUnlockedLevel } from '../learning-path/LearningPathway';
 import ChordWheel from '../chord-wheel/ChordWheel';
 import { ChordBuilderProvider } from '../../contexts/ChordBuilderContext';
@@ -74,6 +75,7 @@ const PracticeMode: FC = () => {
         useState<'guitar' | 'piano'>('guitar');
     const [currentChord, setCurrentChord] = useState<ChordOption>(toChordOption(chords[0]));
     const [showSongPractice, setShowSongPractice] = useState(false);
+    const [showAssessmentPractice, setShowAssessmentPractice] = useState(false);
     const { unlockAchievement } = useAchievements();
     const [{ isPlaying, bpm }, { start, stop, setBpm }] = useMetronome(60, 4);
     const practicedChordsRef = useRef<Set<string>>(new Set());
@@ -214,6 +216,10 @@ const PracticeMode: FC = () => {
         return <SongPractice onClose={() => setShowSongPractice(false)} />;
     }
 
+    if (showAssessmentPractice) {
+        return <AssessmentPractice onClose={() => setShowAssessmentPractice(false)} />;
+    }
+
     return (
         <ChordBuilderProvider>
             <div className="w-full bg-white/80 dark:bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 p-8">
@@ -345,6 +351,17 @@ const PracticeMode: FC = () => {
                                             }`}
                                         >
                                             {showTips ? '✅ On' : '❌ Off'}
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-col items-center">
+                                        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                            🎯 Assessment Practice
+                                        </label>
+                                        <button
+                                            onClick={() => setShowAssessmentPractice(true)}
+                                            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-teal-600 text-white font-semibold hover:from-blue-600 hover:to-teal-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                                        >
+                                            📋 Year 7 & 8
                                         </button>
                                     </div>
                                     <div className="flex flex-col items-center">
