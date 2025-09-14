@@ -1,6 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useRef } from 'react'
 import { useDrag } from 'react-dnd'
-import { getPrimaryColor } from '../../utils/diagramTheme'
 
 // Chord colors from the standardized color scheme
 const CHORD_COLORS = {

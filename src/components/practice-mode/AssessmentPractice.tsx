@@ -41,7 +41,7 @@ const AssessmentPractice: FC<AssessmentPracticeProps> = ({ onClose }) => {
   const [{ isPlaying, bpm }, { start, stop, setBpm }] = useMetronome(60, 4);
   const { playChord, fretToNote } = useAudioContext();
 
-  const progression = assessmentType === 'year7' ? YEAR_7_PROGRESSION : (selectedSong?.progression || []);
+  const progression = assessmentType === 'year7' ? YEAR_7_PROGRESSION : (selectedSong?.progression ?? []);
   const currentChordName = progression[currentChordIndex];
   const currentChord = currentChordName ? getChord(currentChordName) : null;
 
@@ -360,10 +360,10 @@ const AssessmentPractice: FC<AssessmentPracticeProps> = ({ onClose }) => {
           <ChordDisplay 
             chord={{
               name: currentChord.name,
-              positions: currentChord.guitarPositions || [],
-              notes: currentChord.pianoNotes || [],
-              level: currentChord.level || 1,
-              color: currentChord.color || '#000000'
+              positions: currentChord.guitarPositions ?? [],
+              notes: currentChord.pianoNotes ?? [],
+              level: currentChord.level ?? 1,
+              color: currentChord.color ?? '#000000'
             }}
             color={currentChord.color}
             instrument={selectedInstrument}

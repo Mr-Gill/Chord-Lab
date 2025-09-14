@@ -50,7 +50,7 @@ export function getDiatonicChordsWithRomans(key: string): { chord: string; roman
   
   return Object.entries(keyDegrees)
     .filter(([roman]) => roman !== 'vii') // Skip diminished for now
-    .map(([roman, chord]) => ({ chord, roman }));
+    .map(([roman, chord]) => ({ chord: chord as string, roman }));
 }
 
 // Check if a chord is diatonic in the given key

@@ -63,7 +63,7 @@ export const ChordDropZone: React.FC<ChordDropZoneProps> = ({
           <div className="flex items-center space-x-3">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shadow-lg"
-              style={{ backgroundColor: theme?.primary || '#6b7280' }}
+              style={{ backgroundColor: theme?.primary ?? '#6b7280' }}
             >
               {chord}
             </div>
